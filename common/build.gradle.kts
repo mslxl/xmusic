@@ -12,7 +12,11 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
+
+    implementation("org.apache.httpcomponents:httpclient:4.5.13")
+    implementation(fileTree("libs"))
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
