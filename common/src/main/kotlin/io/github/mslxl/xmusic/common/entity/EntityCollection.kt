@@ -4,6 +4,9 @@ import io.github.mslxl.xmusic.common.source.SourceID
 import io.github.mslxl.xmusic.common.source.processor.Explorable
 import java.util.*
 
+/**
+ * Your Collection
+ */
 data class EntityCollection(
     val id: String,
     val source: SourceID

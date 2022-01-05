@@ -13,6 +13,8 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
 
+    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("org.hsqldb:hsqldb:2.6.1")
     implementation("org.apache.httpcomponents:httpclient:4.5.13")
     implementation(fileTree("libs"))
 
