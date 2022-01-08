@@ -10,6 +10,7 @@ import io.github.mslxl.ktswing.layout.borderLayout
 import io.github.mslxl.ktswing.layout.cardLayout
 import io.github.mslxl.ktswing.resizable
 import io.github.mslxl.xmusic.common.XMusic
+import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.desktop.fs.LocalFile
 import io.github.mslxl.xmusic.desktop.src.SourceLocalMusic
 import io.github.mslxl.xmusic.desktop.ui.discoveryPane
@@ -33,7 +34,7 @@ object App {
     var currentShowCard = ""
     private fun showCard(cardName: String) {
         //TODO use slf4j instead of raw stdio
-        println("Show card $cardName")
+        this::class.logger.info("show card $cardName")
         cardLayout.show(centerPane, cardName)
         centerPane.updateUI()
         currentShowCard = cardName
@@ -46,6 +47,7 @@ object App {
             JFrame.setDefaultLookAndFeelDecorated(true)
             JDialog.setDefaultLookAndFeelDecorated(true)
         } catch (e: Exception) {
+            this::class.logger.warn("Fail to use darcula LAF")
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
         }
 

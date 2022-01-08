@@ -7,6 +7,7 @@ import io.github.mslxl.ktswing.layout.borderLayout
 import io.github.mslxl.xmusic.common.config.SourceConfig
 import io.github.mslxl.xmusic.common.config.SourceConfigTran
 import io.github.mslxl.xmusic.desktop.App
+import io.github.mslxl.xmusic.desktop.JTextLoggerAppender
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
 import javax.swing.JOptionPane
@@ -55,19 +56,7 @@ fun settingsPane(): JTabbedPane {
             tab("Debug") {
                 borderLayout {
                     center {
-                        scrollPane {
-
-                            vBox {
-
-                            }
-                        }
-                    }
-                    bottom {
-                        hBox {
-                            button("Clear").addActionListener {
-
-                            }
-                        }
+                        add(JTextLoggerAppender.getJTextLogger())
                     }
                 }
             }

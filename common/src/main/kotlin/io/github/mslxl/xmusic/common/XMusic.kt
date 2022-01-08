@@ -6,12 +6,18 @@ import io.github.mslxl.xmusic.common.source.MusicSource
 import io.github.mslxl.xmusic.common.source.SourceID
 
 class XMusic(val fs: FileSystem) {
+    init {
+        this::class.logger.info("XMusic core($version) init")
+    }
+
     private val sources: HashMap<SourceID, MusicSource> = hashMapOf()
     private val config: HashMap<SourceID, SourceConfig> = hashMapOf()
     fun addMusicSource(src: MusicSource) {
         if (src.id in sources) {
             error("${src.id} is duplicated")
         }
+        this::class.logger.info("add music source: ${src.name}(${src.id})")
+
         val cfg = SourceConfig(fs, src.id)
         src.acceptConfig(cfg)
         config[src.id] = cfg
