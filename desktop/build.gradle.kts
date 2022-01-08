@@ -20,6 +20,7 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation(project(":common"))
     implementation("com.github.mslxl:KtSwing:2.1.0")
+    implementation(fileTree("libs"))
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")

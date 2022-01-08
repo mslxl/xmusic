@@ -1,5 +1,6 @@
 package io.github.mslxl.xmusic.desktop
 
+import com.bulenkov.darcula.DarculaLaf
 import io.github.mslxl.ktswing.attr
 import io.github.mslxl.ktswing.component.panel
 import io.github.mslxl.ktswing.component.tabbedPane
@@ -16,6 +17,8 @@ import io.github.mslxl.xmusic.desktop.ui.playBar
 import io.github.mslxl.xmusic.desktop.ui.settingsPane
 import io.github.mslxl.xmusic.desktop.ui.sideBar
 import java.awt.CardLayout
+import javax.swing.JDialog
+import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.UIManager
 
@@ -37,47 +40,57 @@ object App {
     }
 
     @JvmStatic
-    fun main(args: Array<String>) = frame {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-        attr {
-            title = "XMusic"
-            setSize(800, 500)
-            resizable
-            setLocationRelativeTo(null)
+    fun main(args: Array<String>) {
+        try {
+            UIManager.setLookAndFeel(DarculaLaf())
+            JFrame.setDefaultLookAndFeelDecorated(true)
+            JDialog.setDefaultLookAndFeelDecorated(true)
+        } catch (e: Exception) {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
         }
-        borderLayout {
-            left {
-                add(sideBar(
-                    onDiscoveryAction = { showCard("Discovery") },
-                    onMineAction = { showCard("My") },
-                    onSettingAction = { showCard("Setting") }
-                ))
-            }
-            center {
-                panel {
-                    centerPane = self
 
-                    cardLayout = cardLayout {
-                        card("Setting") {
-                            add(settingsPane())
-                        }
-                        card("My") {
-                            tabbedPane {
-                                tab("My") {
+        frame {
+            attr {
+                title = "XMusic"
+                setSize(800, 500)
+                resizable
+                setLocationRelativeTo(null)
+            }
+            borderLayout {
+                left {
+                    add(
+                        sideBar(
+                            onDiscoveryAction = { showCard("Discovery") },
+                            onMineAction = { showCard("My") },
+                            onSettingAction = { showCard("Setting") }
+                        ))
+                }
+                center {
+                    panel {
+                        centerPane = self
+
+                        cardLayout = cardLayout {
+                            card("Setting") {
+                                add(settingsPane())
+                            }
+                            card("My") {
+                                tabbedPane {
+                                    tab("My") {
+                                    }
                                 }
                             }
+                            card("Discovery") {
+                                add(discoveryPane())
+                            }
+                            show("Discovery")
                         }
-                        card("Discovery") {
-                            add(discoveryPane())
-                        }
-                        show("Discovery")
                     }
                 }
+                bottom {
+                    add(playBar())
+                }
             }
-            bottom {
-                add(playBar())
-            }
-        }
-    }.exitOnClose
+        }.exitOnClose
 
+    }
 }

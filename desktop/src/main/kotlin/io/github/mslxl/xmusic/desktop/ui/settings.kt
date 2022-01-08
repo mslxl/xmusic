@@ -2,15 +2,14 @@ package io.github.mslxl.xmusic.desktop.ui
 
 import io.github.mslxl.ktswing.attr
 import io.github.mslxl.ktswing.component.*
-import io.github.mslxl.ktswing.defaultLayout
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayout
-import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.config.SourceConfig
 import io.github.mslxl.xmusic.common.config.SourceConfigTran
 import io.github.mslxl.xmusic.desktop.App
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
+import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JTabbedPane
 
@@ -35,14 +34,40 @@ fun settingsPane(): JTabbedPane {
                                             else -> error("Unknown config type ${entry.value.type}")
                                         }
                                         add(pane)
+                                        glueAround
                                     }
-                                    button("Apply").addActionListener {
-                                        trans.commit()
+                                    hBox {
+                                        button("Cancel").addActionListener {
+                                            JOptionPane.showMessageDialog(this.self, "TODO")
+                                        }
+                                        glue
+                                        button("Apply").addActionListener {
+                                            trans.commit()
+                                        }
                                     }
                                 }
                             }
                         }
 
+                    }
+                }
+            }
+            tab("Debug") {
+                borderLayout {
+                    center {
+                        scrollPane {
+
+                            vBox {
+
+                            }
+                        }
+                    }
+                    bottom {
+                        hBox {
+                            button("Clear").addActionListener {
+
+                            }
+                        }
                     }
                 }
             }
