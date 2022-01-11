@@ -16,7 +16,7 @@ class XMusic(val fs: FileSystem) {
         if (src.id in sources) {
             error("${src.id} is duplicated")
         }
-        this::class.logger.info("add music source: ${src.name}(${src.id})")
+        this::class.logger.info("install with music source: ${src.name}(${src.id})")
 
         val cfg = SourceConfig(fs, src.id)
         src.acceptConfig(cfg)

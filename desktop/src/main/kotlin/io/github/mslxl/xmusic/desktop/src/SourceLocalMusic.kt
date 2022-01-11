@@ -41,7 +41,7 @@ class SourceLocalMusic : MusicSource {
                     continuation.resume(
                         listOf(
                             EntitySongInfo(
-                                id = entitySong.id, title = title, singer = singer, coverUrl = ""
+                                parent = entitySong, id = entitySong.id, title = title, singer = singer, coverUrl = ""
                             )
                         )
                     )
@@ -49,7 +49,7 @@ class SourceLocalMusic : MusicSource {
                     continuation.resume(
                         listOf(
                             EntitySongInfo(
-                                id = entitySong.id, title = name, singer = "Unknown", coverUrl = ""
+                                parent = entitySong, id = entitySong.id, title = name, singer = "Unknown", coverUrl = ""
                             )
                         )
                     )
@@ -57,8 +57,8 @@ class SourceLocalMusic : MusicSource {
             }
         }
 
-        override suspend fun getURL(entitySong: EntitySong, info: EntitySongInfo, option: String): URL {
-            return File(entitySong.id).toURI().toURL()
+        override suspend fun getURL(info: EntitySongInfo, option: String): URL {
+            return File(info.parent.id).toURI().toURL()
         }
     }
 

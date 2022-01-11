@@ -10,12 +10,12 @@ interface SongProcessor {
     /**
      * Get download URL of a music part, X-Music will download it later.
      */
-    suspend fun getURL(entitySong: EntitySong, info: EntitySongInfo, option: String): URL
+    suspend fun getURL(info: EntitySongInfo, option: String): URL
 
     /**
      * Get available option, e.g. Quality
      */
-    suspend fun getOption(entitySong: EntitySong, info: EntitySongInfo): List<String> {
+    suspend fun getOption(info: EntitySongInfo): List<String> {
         return listOf("default")
     }
 }

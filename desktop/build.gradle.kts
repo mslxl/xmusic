@@ -1,3 +1,5 @@
+import org.gradle.jvm.tasks.Jar
+
 plugins {
     kotlin("jvm") version "1.6.10"
     java
@@ -34,4 +36,31 @@ dependencies {
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
+}
+
+val fatJar = task("fatJar", type = Jar::class) {
+    baseName = "${project.name}-fat"
+    manifest {
+        attributes["Implementation-Title"] = "XMusic Flatjar"
+        attributes["Implementation-Version"] = version
+        attributes["Main-Class"] = application.mainClass
+    }
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+    exclude(
+        "META-INF/*.RSA",
+        "META-INF/*.SF",
+        "META-INF/*.DSA",
+        "META-INF/INDEX.LIST",
+        "META-INF/versions/*",
+        "module-info.class"
+    )
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    with(tasks.jar.get() as CopySpec)
+
+}
+
+tasks {
+    "build" {
+        dependsOn(fatJar)
+    }
 }
