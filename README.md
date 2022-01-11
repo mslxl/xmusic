@@ -2,6 +2,8 @@
 
 **WIP**
 
+[Chinese Readme 中文版本](docs/README_CN.md)
+
 A simple music player that can play any music from different source. If it is developing as plan, the software will
 support Android and Desktop.
 
