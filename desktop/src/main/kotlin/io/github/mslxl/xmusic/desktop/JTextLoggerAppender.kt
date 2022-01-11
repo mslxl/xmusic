@@ -1,7 +1,6 @@
 package io.github.mslxl.xmusic.desktop
 
 import ch.qos.logback.core.UnsynchronizedAppenderBase
-import javax.swing.*
 
 class JTextLoggerAppender<E> : UnsynchronizedAppenderBase<E>() {
     companion object {
@@ -21,19 +20,6 @@ class JTextLoggerAppender<E> : UnsynchronizedAppenderBase<E>() {
 
         fun unregisterNotifier(listener: (String) -> Unit) {
             this.listener.remove(listener)
-        }
-
-        fun getJTextLogger(): JComponent {
-            val box = Box.createVerticalBox()
-            registerNotifier {
-                SwingUtilities.invokeLater {
-                    box.add(JLabel(it))
-                    if (box.componentCount > 100) {
-                        box.remove(0)
-                    }
-                }
-            }
-            return JScrollPane(box)
         }
     }
 

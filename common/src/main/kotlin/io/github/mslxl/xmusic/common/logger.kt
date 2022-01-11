@@ -11,3 +11,9 @@ val KClass<*>.logger: Logger
         loggerMap.getOrPut(this.qualifiedName.toString()) {
             LoggerFactory.getLogger(this.qualifiedName.toString())
         }
+
+fun logger(name: String): Logger {
+    return loggerMap.getOrPut("name-$name") {
+        LoggerFactory.getLogger(name)
+    }
+}

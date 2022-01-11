@@ -18,18 +18,16 @@ fun discoveryPane(): JTabbedPane {
     return swing {
         tabbedPane {
             srcSupported.forEach { src ->
-                tab(src.name) {
+                tabPanelWith(src.name, flowLayout()) {
                     //TODO Switch to VBOX layout
-                    flowLayout {
-                        src.discovery!!.keys.forEach { discoveryId ->
-                            val discovery = src.discovery!![discoveryId]!!
-                            panel {
-                                attr {
-                                    border = TitledBorder(discoveryId)
-                                }
-                                flowLayout {
+                    src.discovery!!.keys.forEach { discoveryId ->
+                        val discovery = src.discovery!![discoveryId]!!
+                        panel {
+                            attr {
+                                border = TitledBorder(discoveryId)
+                            }
+                            flowLayout {
 
-                                }
                             }
                         }
                     }

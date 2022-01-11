@@ -17,9 +17,15 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
     implementation(project(":common"))
-    implementation("com.github.mslxl:KtSwing:2.1.0")
+    implementation(kotlin("stdlib"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.0-native-mt")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.0-native-mt")
+
+    implementation("com.github.mslxl:KtSwing:2.1.2")
+
+    implementation("uk.co.caprica:vlcj:4.7.1")
+
     implementation(fileTree("libs"))
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")

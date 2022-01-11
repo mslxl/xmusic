@@ -12,6 +12,8 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.0-native-mt")
+
 
     api("com.google.code.gson:gson:2.8.9")
     api("org.hsqldb:hsqldb:2.6.1")

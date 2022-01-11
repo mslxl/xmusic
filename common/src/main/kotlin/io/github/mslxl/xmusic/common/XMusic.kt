@@ -31,5 +31,8 @@ class XMusic(val fs: FileSystem) {
 
     companion object {
         const val version = "0.0.1-alpha"
+
+        //TODO add more ext
+        val acceptExt = listOf("mp3", "mp4")
     }
 }
