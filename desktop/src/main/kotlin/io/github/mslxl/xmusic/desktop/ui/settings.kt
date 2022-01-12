@@ -3,22 +3,16 @@ package io.github.mslxl.xmusic.desktop.ui
 import io.github.mslxl.ktswing.attr
 import io.github.mslxl.ktswing.component.*
 import io.github.mslxl.ktswing.component.adv.lazyPanel
-import io.github.mslxl.ktswing.disposeOnClose
-import io.github.mslxl.ktswing.frame
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayout
 import io.github.mslxl.ktswing.layout.borderLayoutCenter
-import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.config.SourceConfig
 import io.github.mslxl.xmusic.common.config.SourceConfigTran
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.desktop.App
-import io.github.mslxl.xmusic.desktop.JTextLoggerAppender
+import io.github.mslxl.xmusic.desktop.ui.subpage.aboutPage
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
-import javax.swing.JComponent
 import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JTabbedPane
@@ -80,67 +74,13 @@ fun settingsPane(): JTabbedPane {
             }
 
             tabPanelWith("About", borderLayoutCenter()) {
-                add(tabAbout())
+                add(aboutPage())
             }
         }
     }
 }
 
-private fun showDebugInfoFrame() = frame {
-    var listener: ((String) -> Unit)? = null
-    attr {
-        addWindowListener(object : WindowAdapter() {
-            override fun windowClosing(e: WindowEvent?) {
-                listener?.let { JTextLoggerAppender.unregisterNotifier(it) }
-            }
-        })
-    }
 
-    borderLayoutCenter {
-        scrollPane {
-            val area = textArea {
-                attr {
-                    isEditable = false
-                }
-            }
-            listener = { event: String ->
-                area.text = "${area.text}$event\n"
-            }
-            JTextLoggerAppender.registerNotifier(listener!!)
-        }
-    }
-    attr {
-        setSize(650, 400)
-        title = "Log"
-    }
-}.disposeOnClose
-
-private fun tabAbout(): JComponent = swing {
-    panel {
-        borderLayout {
-            top {
-                vBox {
-                    label("XMusic desktop ${App.version}")
-                    label("XMusic core ${XMusic.version}")
-                }
-            }
-            center {
-
-            }
-            bottom {
-                panel {
-                    borderLayout {
-                        right {
-                            button("Debug Info").addActionListener {
-                                showDebugInfoFrame()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 private fun cfgTextField(config: SourceConfigTran, key: String, item: SourceConfig.ConfigItem): JPanel {
     val currentValue = config.getNullable(key) ?: ""
