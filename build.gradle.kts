@@ -12,12 +12,6 @@ fun File.createIfNotExists(): File {
     return this
 }
 
-val copyLiceList = task("copyLiceList", type = Jar::class) {
-    from("../licenses/${project.name}.list") {
-        into("licenses/list.txt")
-    }
-}
-
 fun configInstallLicense(project: Project) {
     project.afterEvaluate {
         tasks.getByName<Jar>("jar") {

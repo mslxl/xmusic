@@ -26,6 +26,8 @@ object VlcjControl {
     private var playingDuration: Long = -1
     private var playingPos: Long = 0
 
+    var playingThread: Thread? = null
+
     init {
         Runtime.getRuntime().addShutdownHook(thread(start = false, name = "ShutdownHook-vlcj") {
             logger.info("Release vlcj")
@@ -63,14 +65,22 @@ object VlcjControl {
         })
 
     }
-
     fun play(file: File, info: EntitySongInfo) {
         if (file.extension !in XMusic.acceptExt)
             error("Unsupported media file ${file.extension}")
-        logger.info("Start to play ${file.absolutePath}")
+        logger.info("Prepare to play ${file.absolutePath}")
         playingInfo = info
         playingFile = file
-        thread(name = "Vlcj-playing") {
+        if (playingThread != null && playingThread!!.isAlive) {
+            logger.info("Interrupt play thread before")
+            try {
+                playingThread!!.interrupt()
+            } catch (e: Exception) {
+                logger.error("Interrupt fail", e)
+            }
+        }
+        playingThread = thread(name = "Vlcj-playing") {
+            player.controls().stop()
             player.media().play(file.absolutePath)
         }
     }
@@ -85,6 +95,23 @@ object VlcjControl {
                 }
             }
         })
+    }
+
+    fun addPlayStatusChangListener(listener: (info: EntitySongInfo, cacheFile: File, isPaused: Boolean) -> Unit) {
+        player.events().addMediaPlayerEventListener(object : MediaPlayerEventAdapter() {
+            override fun playing(mediaPlayer: MediaPlayer?) {
+                SwingUtilities.invokeLater {
+                    listener.invoke(playingInfo!!, playingFile!!, false)
+                }
+            }
+
+            override fun paused(mediaPlayer: MediaPlayer?) {
+                SwingUtilities.invokeLater {
+                    listener.invoke(playingInfo!!, playingFile!!, true)
+                }
+            }
+        })
+
     }
 
     fun addPlayEndListener(listener: (info: EntitySongInfo, cacheFile: File) -> Unit) {
@@ -107,8 +134,45 @@ object VlcjControl {
         })
     }
 
+    fun addVolumeChangeListener(listener: (Int) -> Unit) {
+        player.events().addMediaPlayerEventListener(object : MediaPlayerEventAdapter() {
+            override fun volumeChanged(mediaPlayer: MediaPlayer?, volume: Float) {
+                SwingUtilities.invokeLater {
+                    listener.invoke((volume * 100).toInt())
+                }
+            }
+        })
+    }
+
+    var volume: Int
+        get() = player.audio().volume()
+        set(value) {
+            player.audio().setVolume(value)
+        }
+
     fun setPlaytime(position: Long) {
-        logger.info("Media time is set to $position")
         player.controls().setTime(position)
+    }
+
+    fun pause() = player.controls().pause()
+    fun play() = player.controls().play()
+    fun togglePause() {
+        player.controls().setPause(player.status().isPlaying)
+    }
+
+    fun toggleMute() {
+        player.audio().let {
+            it.isMute = !it.isMute
+        }
+    }
+
+    fun addMuteListener(listener: (isMute: Boolean) -> Unit) {
+        player.events().addMediaPlayerEventListener(object : MediaPlayerEventAdapter() {
+            override fun muted(mediaPlayer: MediaPlayer?, muted: Boolean) {
+                SwingUtilities.invokeLater {
+                    listener.invoke(muted)
+                }
+            }
+        })
     }
 }

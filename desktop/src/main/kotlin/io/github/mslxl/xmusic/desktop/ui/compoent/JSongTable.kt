@@ -73,9 +73,11 @@ class JSongTable(private val musicSource: MusicSource) : JScrollPane() {
         tableComponent.fillsViewportHeight = true
         tableComponent.selectionModel.apply {
             selectionMode = ListSelectionModel.SINGLE_SELECTION
+
             addListSelectionListener {
+                //TODO handle double click and single click differently
                 if (it.valueIsAdjusting) return@addListSelectionListener
-                onSongSelectedListener.invoke(model[it.firstIndex])
+                onSongSelectedListener.invoke(model[tableComponent.selectedRow])
             }
         }
     }
