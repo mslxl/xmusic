@@ -52,7 +52,8 @@ val fatJar = task("fatJar", type = Jar::class) {
         "META-INF/*.DSA",
         "META-INF/INDEX.LIST",
         "META-INF/versions/*",
-        "module-info.class"
+        "module-info.class",
+        "LICENSE.txt"
     )
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     with(tasks.jar.get() as CopySpec)
