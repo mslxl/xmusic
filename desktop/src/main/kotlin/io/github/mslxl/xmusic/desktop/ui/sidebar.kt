@@ -1,59 +1,61 @@
 package io.github.mslxl.xmusic.desktop.ui
 
+import com.wordpress.tips4java.robcamick.CompoundIcon
 import com.wordpress.tips4java.robcamick.RotatedIcon
 import com.wordpress.tips4java.robcamick.TextIcon
-import io.github.mslxl.ktswing.CanAddChildrenScope
 import io.github.mslxl.ktswing.attr
 import io.github.mslxl.ktswing.component.button
+import io.github.mslxl.ktswing.component.toolBar
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.onAction
-import java.awt.Insets
 import javax.swing.Icon
 import javax.swing.JComponent
 import javax.swing.JToolBar
 
 fun sideBar(onDiscoveryAction: () -> Unit, onMineAction: () -> Unit, onSettingAction: () -> Unit): JComponent {
     return swing {
-        add(JToolBar(JToolBar.VERTICAL).apply {
-            CanAddChildrenScope(this).apply {
+        toolBar(orient = JToolBar.VERTICAL) {
+            attr {
+                isFloatable = false
+            }
+            button("") {
                 attr {
-                    isFloatable = false
+                    icon = vertCompoundIcon("\uf002", "Discovery", this)
                 }
-                val margin = Insets(20, 5, 20, 5)
-                button("") {
-                    attr {
-                        icon = vertTextIcon("Discovery", this)
-                        setMargin(margin)
-                    }
-                    onAction {
-                        onDiscoveryAction.invoke()
-                    }
-                }
-                button("") {
-                    attr {
-                        icon = vertTextIcon("My Fav", this)
-                        setMargin(margin)
-                    }
-                    onAction {
-                        onMineAction.invoke()
-                    }
-                }
-                button("") {
-                    attr {
-                        icon = vertTextIcon("Settings", this)
-                        setMargin(margin)
-                    }
-                    onAction {
-                        onSettingAction.invoke()
-                    }
+                onAction {
+                    onDiscoveryAction.invoke()
                 }
             }
-        })
+            self.addSeparator()
+            button("") {
+                attr {
+                    icon = vertCompoundIcon("\uf004", "My Fav", this)
+                }
+                onAction {
+                    onMineAction.invoke()
+                }
+            }
+            self.addSeparator()
+            button("") {
+                attr {
+                    icon = vertCompoundIcon("\uf4fe", "Settings", this)
+                }
+                onAction {
+                    onSettingAction.invoke()
+                }
+            }
+        }
     }
 }
 
-private inline fun vertTextIcon(text: String, comp: JComponent): Icon {
-    val icon = TextIcon(comp, text)
-    val rotated = RotatedIcon(icon, RotatedIcon.Rotate.UP)
-    return rotated
+
+@Suppress("NOTHING_TO_INLINE")
+private inline fun vertCompoundIcon(iconText: String, text: String, comp: JComponent): Icon {
+    val tt = TextIcon(comp, text)
+    val icon = TextIcon(comp, iconText).apply {
+        awesomeFontSolid()
+    }
+    val compoundIcon = CompoundIcon(CompoundIcon.Axis.X_AXIS, 4, icon, tt)
+
+    return RotatedIcon(compoundIcon, RotatedIcon.Rotate.UP)
 }

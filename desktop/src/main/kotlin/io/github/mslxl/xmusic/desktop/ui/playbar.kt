@@ -53,14 +53,37 @@ fun playBar(): JPanel {
                         }
                     }
                     glue
-                    button("Pre")
-                    button("Ply")
-                    button("Nxt")
+                    // Previous music
+                    button("\uf104") {
+                        awesomeFontSolid()
+                    }
+                    // Pause/ Play
+                    val CHAR_PLAY = "\uf04b"
+                    val CHAR_PAUSE = "\uf04c"
+                    button(CHAR_PLAY) {
+                        awesomeFontSolid()
+                    }
+                    // Next music
+                    button("\uf105") {
+                        awesomeFontSolid()
+                    }
                     glue
-                    button("Aud")
-                    button("Meta")
+                    // Audio volume
+                    val CHAR_VOLUME_ON = "\uf028"
+                    val CHAR_VOLUME_OFF = "\uf6a9"
+                    button(CHAR_VOLUME_ON) {
+                        awesomeFontSolid()
+                    }
+                    // Meta
+                    button("\uf552") {
+                        awesomeFontSolid()
+                    }
                     glue
-                    button("PlayList")
+                    // Playlist
+                    button("\uf0cb") {
+                        awesomeFontSolid()
+
+                    }
 
                 }
             }
