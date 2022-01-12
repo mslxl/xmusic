@@ -6,5 +6,5 @@
 
 该项目被分为 3 个模块，分别为 `common`, `desktop` and `android`.
 
-`common` 负责承担源管理，音乐下载，信息查血等功能。
+`common` 负责承担源管理，音乐下载，信息查询等功能。
 `android` 和 `desktop` 仅提供界面和播放功能。
