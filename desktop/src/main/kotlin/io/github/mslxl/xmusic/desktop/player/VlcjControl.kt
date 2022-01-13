@@ -3,6 +3,7 @@ package io.github.mslxl.xmusic.desktop.player
 import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.entity.EntitySongInfo
 import io.github.mslxl.xmusic.common.logger
+import io.github.mslxl.xmusic.common.player.PlayerBinding
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory
 import uk.co.caprica.vlcj.media.Media
 import uk.co.caprica.vlcj.media.MediaEventAdapter
@@ -13,7 +14,7 @@ import java.io.File
 import javax.swing.SwingUtilities
 import kotlin.concurrent.thread
 
-object VlcjControl {
+object VlcjControl : PlayerBinding {
     private val logger = VlcjControl::class.logger.apply {
         info("vlcj start init")
     }
@@ -43,8 +44,8 @@ object VlcjControl {
             override fun finished(mediaPlayer: MediaPlayer) {
                 logger.info("vlcj play finish ${playingFile?.absolutePath}")
                 playingDuration = -1
-                playingFile = null
-                playingInfo = null
+//                playingFile = null
+//                playingInfo = null
             }
 
             override fun error(mediaPlayer: MediaPlayer?) {
@@ -65,7 +66,8 @@ object VlcjControl {
         })
 
     }
-    fun play(file: File, info: EntitySongInfo) {
+
+    override fun play(file: File, info: EntitySongInfo) {
         if (file.extension !in XMusic.acceptExt)
             error("Unsupported media file ${file.extension}")
         logger.info("Prepare to play ${file.absolutePath}")
@@ -85,7 +87,16 @@ object VlcjControl {
         }
     }
 
-    val controlApi get() = player.media()
+    override fun stop() {
+        player.controls().stop()
+    }
+
+    override fun watchPlayEnd(watcher: () -> Unit) {
+        addPlayEndListener { info, cacheFile ->
+            watcher.invoke()
+        }
+    }
+
 
     fun addPlayInfoListener(listener: (info: EntitySongInfo, cacheFile: File) -> Unit) {
         player.events().addMediaPlayerEventListener(object : MediaPlayerEventAdapter() {
@@ -117,8 +128,9 @@ object VlcjControl {
     fun addPlayEndListener(listener: (info: EntitySongInfo, cacheFile: File) -> Unit) {
         player.events().addMediaPlayerEventListener(object : MediaPlayerEventAdapter() {
             override fun finished(mediaPlayer: MediaPlayer) {
+                val (fst, snd) = (playingInfo!! to playingFile!!)
                 SwingUtilities.invokeLater {
-                    listener.invoke(playingInfo!!, playingFile!!)
+                    listener.invoke(fst, snd)
                 }
             }
         })
@@ -127,8 +139,9 @@ object VlcjControl {
     fun addPlayingListener(listener: (info: EntitySongInfo, cacheFile: File, progress: Long, totalLength: Long) -> Unit) {
         player.events().addMediaPlayerEventListener(object : MediaPlayerEventAdapter() {
             override fun timeChanged(mediaPlayer: MediaPlayer?, newTime: Long) {
+                val (fst, snd) = (playingInfo!! to playingFile!!)
                 SwingUtilities.invokeLater {
-                    listener.invoke(playingInfo!!, playingFile!!, newTime, playingDuration)
+                    listener.invoke(fst, snd, newTime, playingDuration)
                 }
             }
         })

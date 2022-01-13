@@ -2,12 +2,38 @@ package io.github.mslxl.xmusic.common
 
 import io.github.mslxl.xmusic.common.config.SourceConfig
 import io.github.mslxl.xmusic.common.fs.FileSystem
+import io.github.mslxl.xmusic.common.net.NetworkHandle
+import io.github.mslxl.xmusic.common.player.PlayerBinding
+import io.github.mslxl.xmusic.common.player.VirtualPlaylist
 import io.github.mslxl.xmusic.common.source.MusicSource
 import io.github.mslxl.xmusic.common.source.SourceID
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-class XMusic(val fs: FileSystem) {
+class XMusic(val fs: FileSystem, val controller: PlayerBinding) {
+    val playlist = VirtualPlaylist()
+
     init {
         this::class.logger.info("XMusic core($version) init")
+
+        playlist.addCurrentChangeListener {
+            it?.let { info ->
+                controller.stop()
+                val srcId = info.parent.source
+                val src = getSrc(srcId)
+                GlobalScope.launch(Dispatchers.IO) {
+                    //TODO use option
+                    val url = src.information.getURL(info, src.information.getOption(info).first())
+                    val file = NetworkHandle.download(src, url)
+                    controller.play(file, info)
+                }
+            }
+        }
+
+        controller.watchPlayEnd {
+            playlist.next()
+        }
     }
 
     private val sources: HashMap<SourceID, MusicSource> = hashMapOf()

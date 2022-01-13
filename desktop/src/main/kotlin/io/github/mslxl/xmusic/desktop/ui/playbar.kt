@@ -6,12 +6,16 @@ import io.github.mslxl.ktswing.component.*
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayoutCenter
 import io.github.mslxl.ktswing.onAction
+import io.github.mslxl.xmusic.common.entity.EntitySongInfo
+import io.github.mslxl.xmusic.common.logger
+import io.github.mslxl.xmusic.desktop.App
 import io.github.mslxl.xmusic.desktop.player.VlcjControl
 import java.awt.Color
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 
+private val logger = logger("playbar")
 fun playBar(): JPanel {
     return swing {
         panel {
@@ -61,6 +65,9 @@ fun playBar(): JPanel {
                     // Previous music
                     button("\uf104") {
                         awesomeFontSolid()
+                        onAction {
+                            App.core.playlist.pre()
+                        }
                     }
                     // Pause/ Play
                     val CHAR_PLAY = "\uf04b"
@@ -77,6 +84,9 @@ fun playBar(): JPanel {
                     // Next music
                     button("\uf105") {
                         awesomeFontSolid()
+                        onAction {
+                            App.core.playlist.next()
+                        }
                     }
                     glue
 
@@ -90,7 +100,21 @@ fun playBar(): JPanel {
                     // Playlist
                     button("\uf0cb") {
                         awesomeFontSolid()
-
+                        var popup: Popup? = null
+                        onAction {
+                            //TODO hover the button to show playlist
+                            popup = if (popup == null) {
+                                val location = self.locationOnScreen
+                                logger.info("Show playlist")
+                                playListPopup(self, location.x + self.width, location.y).apply {
+                                    show()
+                                }
+                            } else {
+                                logger.info("Close playlist")
+                                popup!!.hide()
+                                null
+                            }
+                        }
                     }
 
                 }
@@ -174,4 +198,56 @@ private fun CanAddChildrenScope<*>.audioButton() {
         }
         awesomeFontSolid()
     }
+}
+
+fun playListPopup(parent: JComponent, x: Int, y: Int): Popup {
+
+    val model = object : AbstractListModel<EntitySongInfo>() {
+        override fun getSize(): Int = App.core.playlist.size
+
+
+        override fun getElementAt(index: Int): EntitySongInfo =
+            App.core.playlist.list[index]
+    }
+
+
+    val panel = swing<JComponent> {
+        panel {
+            attr {
+                border = BorderFactory.createLineBorder(Color.GRAY)
+                preferredSize.apply {
+                    height = 400
+                    width = 350
+                }
+            }
+            borderLayoutCenter {
+                scrollPane {
+                    list<EntitySongInfo> {
+                        val render = DefaultListCellRenderer()
+                        self.cellRenderer =
+                            ListCellRenderer {
+                                //TODO add special icon for song in playing status
+                                    list, value, index, isSelected, cellHasFocus ->
+                                render.getListCellRendererComponent(
+                                    list,
+                                    "${value.singer} - ${value.title}",
+                                    index,
+                                    isSelected,
+                                    cellHasFocus
+                                )
+                            }
+                        self.model = model
+                        self.selectionMode = ListSelectionModel.SINGLE_SELECTION
+                        self.selectedIndex = App.core.playlist.currentPos
+                        self.selectionModel.addListSelectionListener {
+                            App.core.playlist.currentPos = self.selectedIndex
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    val factory = PopupFactory.getSharedInstance()
+    return factory.getPopup(parent, panel, x - panel.preferredSize.width, y - panel.preferredSize.height)
 }

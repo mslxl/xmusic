@@ -11,6 +11,7 @@ import io.github.mslxl.ktswing.resizable
 import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.desktop.fs.LocalFile
+import io.github.mslxl.xmusic.desktop.player.VlcjControl
 import io.github.mslxl.xmusic.desktop.src.SourceLocalMusic
 import io.github.mslxl.xmusic.desktop.ui.*
 import java.awt.CardLayout
@@ -23,7 +24,7 @@ object App {
     const val version = "0.0.1-alpha"
     private val logger = App::class.logger
 
-    val core = XMusic(LocalFile()).apply {
+    val core: XMusic = XMusic(LocalFile(), VlcjControl).apply {
         addMusicSource(SourceLocalMusic())
     }
 

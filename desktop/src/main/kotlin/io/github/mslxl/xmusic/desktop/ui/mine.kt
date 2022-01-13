@@ -9,9 +9,7 @@ import io.github.mslxl.ktswing.component.tabbedPane
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayoutCenter
 import io.github.mslxl.xmusic.common.entity.EntityCollection
-import io.github.mslxl.xmusic.common.net.NetworkHandle
 import io.github.mslxl.xmusic.desktop.App
-import io.github.mslxl.xmusic.desktop.player.VlcjControl
 import io.github.mslxl.xmusic.desktop.ui.compoent.JSongTable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -78,15 +76,8 @@ fun myFavPane(): JComponent {
                                 // Create song table
                                 rightTable.apply {
                                     onSongSelectedListener = { songInfo ->
-                                        GlobalScope.launch(Dispatchers.IO) {
                                             //TODO Make option selectable
-                                            val url = src.information.getURL(
-                                                songInfo,
-                                                src.information.getOption(songInfo).first()
-                                            )
-                                            val cacheFile = NetworkHandle.download(src, url)
-                                            VlcjControl.play(cacheFile, songInfo)
-                                        }
+                                            App.core.playlist.add(songInfo)
                                     }
                                 }
                                 add(rightTable)
