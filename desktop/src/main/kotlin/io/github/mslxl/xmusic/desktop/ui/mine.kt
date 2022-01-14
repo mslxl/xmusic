@@ -54,7 +54,7 @@ fun myFavPane(): JComponent {
                                                 if (selectEvent.valueIsAdjusting) return@addListSelectionListener
                                                 // Show collection's content
                                                 GlobalScope.launch(Dispatchers.IO) {
-                                                    val entity = collectionDataList[selectEvent.firstIndex]
+                                                    val entity = collectionDataList[self.selectedIndex]
                                                     val seq = src.collection!!.getContent(entity)
                                                     withContext(Dispatchers.Swing) {
                                                         rightTable.setDataSource(seq)

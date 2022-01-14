@@ -13,7 +13,7 @@ class LocalFile : FileSystem {
 
     override fun list(folders: List<String>): List<String> {
         return File(dir, folders.reduce { acc, s -> acc + File.pathSeparator + s })
-            .list()
+            .list()!!
             .toList()
     }
 

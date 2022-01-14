@@ -5,11 +5,22 @@ import io.github.mslxl.xmusic.common.logger
 import kotlin.random.Random
 
 class VirtualPlaylist {
+    enum class PlayMode {
+        IN_ORDER,
+        SHUFFLE,
+        LOOP
+    }
+
     companion object {
         private val logger = VirtualPlaylist::class.logger
     }
 
     private val data = arrayListOf<EntitySongInfo>()
+    var playMode = PlayMode.IN_ORDER
+        set(value) {
+            field = value
+            logger.info("switch play mode to $value")
+        }
 
     val list: List<EntitySongInfo> get() = data
     val size get() = list.size
@@ -67,6 +78,14 @@ class VirtualPlaylist {
         currentChangeListener.add(listener)
     }
 
+    fun removeListChangeListener(listener: () -> Unit) {
+        listChangeListener.remove(listener)
+    }
+
+    fun removeCurrentChangeListener(listener: (current: EntitySongInfo?) -> Unit) {
+        currentChangeListener.remove(listener)
+    }
+
     fun replace(entitySongInfo: EntitySongInfo) {
         data.clear()
         data.add(entitySongInfo)
@@ -105,6 +124,17 @@ class VirtualPlaylist {
         handleCurrentPos()
     }
 
+    fun nextByMode() = when (playMode) {
+        PlayMode.IN_ORDER -> next()
+        PlayMode.LOOP -> loop()
+        PlayMode.SHUFFLE -> shuffle()
+    }
+
+    fun preByMode() = when (playMode) {
+        PlayMode.SHUFFLE -> shuffle()
+        else -> pre()
+    }
+
 
     fun pre(): Int {
         currentPos = if (currentPos == 0) list.lastIndex else currentPos - 1
@@ -117,12 +147,12 @@ class VirtualPlaylist {
         return currentPos
     }
 
-    fun nextShuffle(): Int {
+    fun shuffle(): Int {
         currentPos = Random.nextInt(0, list.lastIndex)
         return currentPos
     }
 
-    fun nextLoop(): Int {
+    fun loop(): Int {
         currentPos = currentPos // It means not modify currentPos, but notify listener that this value has changed
         return currentPos
     }

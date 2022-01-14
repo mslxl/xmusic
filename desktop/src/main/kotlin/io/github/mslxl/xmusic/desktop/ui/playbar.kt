@@ -8,6 +8,7 @@ import io.github.mslxl.ktswing.layout.borderLayoutCenter
 import io.github.mslxl.ktswing.onAction
 import io.github.mslxl.xmusic.common.entity.EntitySongInfo
 import io.github.mslxl.xmusic.common.logger
+import io.github.mslxl.xmusic.common.player.VirtualPlaylist
 import io.github.mslxl.xmusic.desktop.App
 import io.github.mslxl.xmusic.desktop.player.VlcjControl
 import java.awt.Color
@@ -21,7 +22,19 @@ fun playBar(): JPanel {
         panel {
             borderLayoutCenter {
                 hBox {
-                    button("L/S")
+                    val MODE_SHUFFLE = "\uf074"
+                    val MODE_ORDER = "\uf160"
+                    val MODE_LOOP = "\uf2f9" //icon 'repeat' is pro feature, XD
+                    val modes = listOf(MODE_ORDER, MODE_SHUFFLE, MODE_LOOP)
+                    var currentMode = 0
+                    button(modes[App.core.playlist.playMode.ordinal]) {
+                        awesomeFontSolid()
+                        onAction {
+                            currentMode++
+                            self.text = modes[currentMode % 3]
+                            App.core.playlist.playMode = VirtualPlaylist.PlayMode.values()[currentMode % 3]
+                        }
+                    }
                     glue
                     button("Img")
                     glue
@@ -66,7 +79,7 @@ fun playBar(): JPanel {
                     button("\uf104") {
                         awesomeFontSolid()
                         onAction {
-                            App.core.playlist.pre()
+                            App.core.playlist.preByMode()
                         }
                     }
                     // Pause/ Play
@@ -85,7 +98,7 @@ fun playBar(): JPanel {
                     button("\uf105") {
                         awesomeFontSolid()
                         onAction {
-                            App.core.playlist.next()
+                            App.core.playlist.nextByMode()
                         }
                     }
                     glue
@@ -105,18 +118,15 @@ fun playBar(): JPanel {
                             //TODO hover the button to show playlist
                             popup = if (popup == null) {
                                 val location = self.locationOnScreen
-                                logger.info("Show playlist")
                                 playListPopup(self, location.x + self.width, location.y).apply {
                                     show()
                                 }
                             } else {
-                                logger.info("Close playlist")
                                 popup!!.hide()
                                 null
                             }
                         }
                     }
-
                 }
             }
         }

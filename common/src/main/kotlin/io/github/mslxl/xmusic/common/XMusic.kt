@@ -59,6 +59,6 @@ class XMusic(val fs: FileSystem, val controller: PlayerBinding) {
         const val version = "0.0.1-alpha"
 
         //TODO add more ext
-        val acceptExt = listOf("mp3", "mp4")
+        val acceptExt = listOf("mp3", "mp4", "m4a", "m4s")
     }
 }
