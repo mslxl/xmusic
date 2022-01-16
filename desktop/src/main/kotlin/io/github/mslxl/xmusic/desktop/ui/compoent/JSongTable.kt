@@ -90,6 +90,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
                         // replace playlist with current list,and then play clicked music
                         playlist.replace(tableModel.listData)
                         playlist.currentPos = tableComponent.selectedRow
+                        playlist.notifyCurrentChange()
                     } else if (e.button == MouseEvent.BUTTON3) {
                         val songs = tableComponent.selectedRows.map { tableModel[it] }.filterNotNull()
                         // show PopupMenu
@@ -101,6 +102,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
                                     if (needToSwitch) {
                                         playlist.currentPos++
                                     }
+                                    playlist.notifyCurrentChange()
                                 }
                             }
                             item("Play next") {

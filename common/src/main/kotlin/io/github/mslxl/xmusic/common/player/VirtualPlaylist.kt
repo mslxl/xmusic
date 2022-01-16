@@ -32,10 +32,7 @@ class VirtualPlaylist {
         get() = if (field < 0) -1
         else if (field >= data.size) data.size - 1
         else field
-        set(value) {
-            field = value
-            notifyCurrentChange()
-        }
+
     private val listChangeListener = arrayListOf<() -> Unit>()
     private val currentChangeListener = arrayListOf<(EntitySongInfo?) -> Unit>()
 
@@ -53,7 +50,7 @@ class VirtualPlaylist {
         }
     }
 
-    private fun notifyCurrentChange() {
+    fun notifyCurrentChange() {
         val current = data.getOrNull(currentPos)
         currentChangeListener.forEach {
             try {
@@ -146,22 +143,24 @@ class VirtualPlaylist {
 
     fun pre(): Int {
         currentPos = if (currentPos == 0) list.lastIndex else currentPos - 1
+        notifyCurrentChange()
         return currentPos
     }
 
     fun next(): Int {
         currentPos = if (currentPos < list.lastIndex) currentPos + 1 else 0
-
+        notifyCurrentChange()
         return currentPos
     }
 
     fun shuffle(): Int {
         currentPos = Random.nextInt(0, list.lastIndex)
+        notifyCurrentChange()
         return currentPos
     }
 
     fun loop(): Int {
-        currentPos = currentPos // It means not modify currentPos, but notify listener that this value has changed
+        notifyCurrentChange()
         return currentPos
     }
 }

@@ -273,7 +273,7 @@ fun playListPopupPanel(): JComponent {
                             }
                             self.selectionModel.addListSelectionListener {
                                 App.core.playlist.currentPos = self.selectedIndex
-
+                                App.core.playlist.notifyCurrentChange()
                             }
                         }
                     }
