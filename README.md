@@ -11,3 +11,9 @@ The project is split into 3 modules, there are: `common`, `desktop` and `android
 
 `common` is responsible for music downloading, information querying etc.
 `android` and `desktop` provide UI and play local music function.
+
+### snapshot
+
+Preview only, it does not represent final function.
+
+![](screencap/snapshot.png)
