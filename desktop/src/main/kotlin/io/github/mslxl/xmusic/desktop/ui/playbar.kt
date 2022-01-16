@@ -4,6 +4,7 @@ import io.github.mslxl.ktswing.CanAddChildrenScope
 import io.github.mslxl.ktswing.attr
 import io.github.mslxl.ktswing.component.*
 import io.github.mslxl.ktswing.group.swing
+import io.github.mslxl.ktswing.layout.borderLayout
 import io.github.mslxl.ktswing.layout.borderLayoutCenter
 import io.github.mslxl.ktswing.onAction
 import io.github.mslxl.xmusic.common.entity.EntitySongInfo
@@ -11,7 +12,12 @@ import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.player.VirtualPlaylist
 import io.github.mslxl.xmusic.desktop.App
 import io.github.mslxl.xmusic.desktop.player.VlcjControl
+import io.github.mslxl.xmusic.desktop.ui.util.PopupPosition
+import io.github.mslxl.xmusic.desktop.ui.util.linkHoverPopup
+import io.github.mslxl.xmusic.desktop.ui.util.linkTogglePopup
 import java.awt.Color
+import java.awt.Dimension
+import java.awt.Point
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
@@ -113,19 +119,12 @@ fun playBar(): JPanel {
                     // Playlist
                     button("\uf0cb") {
                         awesomeFontSolid()
-                        var popup: Popup? = null
-                        onAction {
-                            //TODO hover the button to show playlist
-                            popup = if (popup == null) {
-                                val location = self.locationOnScreen
-                                playListPopup(self, location.x + self.width, location.y).apply {
-                                    show()
-                                }
-                            } else {
-                                popup!!.hide()
-                                null
-                            }
-                        }
+                        linkTogglePopup(playListPopupPanel(), PopupPosition.DynamicCalc { btn, panel ->
+                            val btnLoc = btn.locationOnScreen
+                            val x = btnLoc.x + btn.width - panel.preferredSize.width
+                            val y = btnLoc.y - panel.preferredSize.height
+                            Point(x, y)
+                        })
                     }
                 }
             }
@@ -133,7 +132,7 @@ fun playBar(): JPanel {
     }
 }
 
-fun audioPopPanel(currentVolume: Int, onChange: (Int) -> Unit) = swing<JComponent> {
+fun audioPopupPanel(currentVolume: Int, onChange: (Int) -> Unit) = swing<JComponent> {
     panel {
         attr {
             border = BorderFactory.createLineBorder(Color.GRAY)
@@ -153,111 +152,133 @@ fun audioPopPanel(currentVolume: Int, onChange: (Int) -> Unit) = swing<JComponen
     }
 }
 
-//TODO optimize code
 private fun CanAddChildrenScope<*>.audioButton() {
     // Audio volume
     val CHAR_VOLUME_ON = "\uf028"
     val CHAR_VOLUME_OFF = "\uf6a9"
     button(CHAR_VOLUME_ON) {
+        awesomeFontSolid()
         VlcjControl.addVolumeChangeListener {
             self.toolTipText = "$it%"
         }
-
-
-        self.addMouseListener(object : MouseAdapter() {
-            var panel: JComponent? = null
-            var popup: Popup? = null
-            override fun mouseEntered(e: MouseEvent) {
-                popup?.hide()
-
-                panel = audioPopPanel(VlcjControl.volume, onChange = { volume ->
-                    VlcjControl.volume = volume
-                })
-
-                panel!!.addMouseListener(object : MouseAdapter() {
-                    override fun mouseExited(e: MouseEvent?) {
-                        popup?.hide()
-                    }
-                })
-
-                val popupFactory = PopupFactory.getSharedInstance()
-                val btnLocation = self.locationOnScreen
-                val panelX = btnLocation.x + (self.width / 2 - panel!!.preferredSize.width / 2)
-                val panelY = btnLocation.y - panel!!.preferredSize.height + 5
-                popup =
-                    popupFactory.getPopup(self, panel, panelX, panelY)
-                popup!!.show()
-                panel!!.grabFocus()
-            }
-
-            override fun mouseExited(e: MouseEvent) {
-                // 还有这种写法？
-                if (panel?.hasFocus() == false) {
-                    popup?.hide()
-                    popup = null
-                }
-
-            }
-
-            override fun mouseClicked(e: MouseEvent) {
-                VlcjControl.toggleMute()
-            }
-        })
+        self.addActionListener {
+            VlcjControl.toggleMute()
+        }
         VlcjControl.addMuteListener { isMute ->
             self.text = if (isMute) CHAR_VOLUME_OFF else CHAR_VOLUME_ON
         }
-        awesomeFontSolid()
+
+        linkHoverPopup(audioPopupPanel(VlcjControl.volume, onChange = { newVolume ->
+            VlcjControl.volume = newVolume
+        }), PopupPosition.UpOwner())
     }
 }
 
-fun playListPopup(parent: JComponent, x: Int, y: Int): Popup {
 
-    val model = object : AbstractListModel<EntitySongInfo>() {
-        override fun getSize(): Int = App.core.playlist.size
+fun playListPopupPanel(): JComponent {
+    val listModel = object : AbstractListModel<EntitySongInfo>() {
+        val playlist = App.core.playlist
+        var lastUpdateIdx = 0
 
-
-        override fun getElementAt(index: Int): EntitySongInfo =
-            App.core.playlist.list[index]
-    }
-
-
-    val panel = swing<JComponent> {
-        panel {
-            attr {
-                border = BorderFactory.createLineBorder(Color.GRAY)
-                preferredSize.apply {
-                    height = 400
-                    width = 350
+        init {
+            playlist.addListChangeListener {
+                fireContentsChanged(playlist, 0, size)
+            }
+            playlist.addCurrentChangeListener {
+                if (it == null) {
+                    fireContentsChanged(playlist, 0, size)
+                } else {
+                    val idx = playlist.currentPos
+                    fireContentsChanged(playlist, lastUpdateIdx, lastUpdateIdx)
+                    fireContentsChanged(playlist, idx, idx)
+                    lastUpdateIdx = idx
                 }
             }
-            borderLayoutCenter {
-                scrollPane {
-                    list<EntitySongInfo> {
-                        val render = DefaultListCellRenderer()
-                        self.cellRenderer =
-                            ListCellRenderer {
-                                //TODO add special icon for song in playing status
-                                    list, value, index, isSelected, cellHasFocus ->
-                                render.getListCellRendererComponent(
-                                    list,
-                                    "${value.singer} - ${value.title}",
-                                    index,
-                                    isSelected,
-                                    cellHasFocus
-                                )
+        }
+
+        override fun getSize(): Int = playlist.size
+
+
+        override fun getElementAt(index: Int): EntitySongInfo = playlist.list[index]
+
+    }
+    val listRenderer = object : ListCellRenderer<EntitySongInfo> {
+        val playlist = App.core.playlist
+        override fun getListCellRendererComponent(
+            list: JList<out EntitySongInfo>?,
+            value: EntitySongInfo?,
+            index: Int,
+            isSelected: Boolean,
+            cellHasFocus: Boolean
+        ) = swing<JComponent> {
+            panel {
+                attr {
+                    border = if (isSelected) BorderFactory.createLineBorder(Color.WHITE)
+                    else BorderFactory.createEtchedBorder()
+                }
+                borderLayout {
+                    left {
+                        label(" ") {
+                            awesomeFontSolid()
+                            if (index == playlist.currentPos) {
+                                self.text = "\uf001 "
+                            } else {
+                                self.text = "  "
                             }
-                        self.model = model
-                        self.selectionMode = ListSelectionModel.SINGLE_SELECTION
-                        self.selectedIndex = App.core.playlist.currentPos
-                        self.selectionModel.addListSelectionListener {
-                            App.core.playlist.currentPos = self.selectedIndex
+                        }
+                    }
+                    center {
+                        label("${value!!.singer} - ${value.title}")
+                    }
+                }
+            }
+        }
+    }
+    return swing {
+        panel {
+            attr {
+                border = BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(Color.GRAY), BorderFactory.createEmptyBorder(15, 15, 10, 15)
+                )
+                preferredSize = Dimension(300, 400)
+            }
+            borderLayout {
+                top {
+                    panelWith(borderLayout()) {
+                        top {
+                            label("Playlist") {
+                                attr {
+                                    font = font.deriveFont(18.0f)
+                                }
+                            }
+                        }
+                        bottom {
+                            panelWith(borderLayout()) {
+                                right {
+                                    button("Clear").addActionListener {
+                                        App.core.playlist.clear()
+                                        VlcjControl.stop()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                center {
+                    scrollPane {
+                        list<EntitySongInfo> {
+                            attr {
+                                model = listModel
+                                cellRenderer = listRenderer
+                            }
+                            self.selectionModel.addListSelectionListener {
+                                App.core.playlist.currentPos = self.selectedIndex
+
+                            }
                         }
                     }
                 }
             }
         }
     }
-
-    val factory = PopupFactory.getSharedInstance()
-    return factory.getPopup(parent, panel, x - panel.preferredSize.width, y - panel.preferredSize.height)
 }

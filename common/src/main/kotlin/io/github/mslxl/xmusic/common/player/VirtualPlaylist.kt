@@ -24,6 +24,10 @@ class VirtualPlaylist {
 
     val list: List<EntitySongInfo> get() = data
     val size get() = list.size
+
+    /**
+     * -1..data.size
+     */
     var currentPos: Int = -1
         get() = if (field < 0) -1
         else if (field >= data.size) data.size - 1
@@ -34,6 +38,10 @@ class VirtualPlaylist {
         }
     private val listChangeListener = arrayListOf<() -> Unit>()
     private val currentChangeListener = arrayListOf<(EntitySongInfo?) -> Unit>()
+
+    operator fun contains(song: EntitySongInfo): Boolean {
+        return song in data
+    }
 
     private fun notifyListChange() {
         listChangeListener.forEach {

@@ -44,7 +44,7 @@ fun myFavPane(): JComponent {
                                 val defModel = DefaultListModel<String>()
 
                                 val leftList: JList<String>
-                                val rightTable = JSongTable(src)
+                                val rightTable = JSongTable(src, App.core.playlist)
                                 val collectionDataList = arrayListOf<EntityCollection>()
                                 scrollPane {
                                     leftList = list<String>(defModel) {
@@ -74,12 +74,6 @@ fun myFavPane(): JComponent {
                                     }
                                 }
                                 // Create song table
-                                rightTable.apply {
-                                    onSongSelectedListener = { songInfo ->
-                                            //TODO Make option selectable
-                                            App.core.playlist.add(songInfo)
-                                    }
-                                }
                                 add(rightTable)
                             }
                         }

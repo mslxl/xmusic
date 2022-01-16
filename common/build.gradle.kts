@@ -20,8 +20,6 @@ dependencies {
     api("org.apache.httpcomponents:httpclient:4.5.13")
 
     api("org.slf4j:slf4j-api:2.0.0-alpha5")
-    api("ch.qos.logback:logback-core:1.3.0-alpha12")
-    api("ch.qos.logback:logback-classic:1.3.0-alpha12")
 
 
     api(fileTree("libs"))
