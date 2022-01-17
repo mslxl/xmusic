@@ -154,7 +154,11 @@ class VirtualPlaylist {
     }
 
     fun shuffle(): Int {
-        currentPos = Random.nextInt(0, list.lastIndex)
+        fun randomDifferent(): Int {
+            val value = Random(System.currentTimeMillis()).nextInt(0, list.lastIndex)
+            return if (value == currentPos) randomDifferent() else value
+        }
+        currentPos = randomDifferent()
         notifyCurrentChange()
         return currentPos
     }
