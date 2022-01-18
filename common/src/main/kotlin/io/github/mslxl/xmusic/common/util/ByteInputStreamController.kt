@@ -85,7 +85,7 @@ class ByteInputStreamController(private val inputStream: InputStream) : AutoClos
         }
     }
 
-    fun readUtil(aheadSize: Int = 1, estimateSize: Int = 1024, predicate: (BytesBlock) -> Boolean): BytesBlock {
+    fun readUntil(aheadSize: Int = 1, estimateSize: Int = 1024, predicate: (BytesBlock) -> Boolean): BytesBlock {
         check(aheadSize > 0)
 
         val array = ArrayList<Byte>(estimateSize)

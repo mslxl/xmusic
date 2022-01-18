@@ -70,7 +70,7 @@ object MusicUtils {
                             logger.info("Parse APIC frame")
                             it.skip(1) // skip Text encoding
 
-                            val mime = it.readUtil(1) { ahead ->
+                            val mime = it.readUntil(1) { ahead ->
                                 ahead.asByteDec() != 0x00
                             }.asString()
                             it.skip(1) // skip end flag 0x00
@@ -79,7 +79,7 @@ object MusicUtils {
                             val pictureType = it.read(1).asByteDec()
                             //TODO use correct picture instead of first picture, it need I to find a special mp3 file to complete it
 
-                            val desc = it.readUtil(1) { ahead ->
+                            val desc = it.readUntil(1) { ahead ->
                                 ahead.asByteDec() != 0x00
                             }
                             it.skip(1) // skip end flag of desciption

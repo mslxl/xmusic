@@ -39,13 +39,13 @@ class ByteInputStreamTester {
     @Test
     fun `Test readUtil`() {
         getStream().controller().use {
-            val fst = it.readUtil(5) { data ->
+            val fst = it.readUntil(5) { data ->
                 data.asString() != "HELLO"
             }
             Assertions.assertEquals("ID3", fst.asString())
             Assertions.assertEquals("HELLO", it.read(5).asString())
 
-            val snd = it.readUtil(1) { data ->
+            val snd = it.readUntil(1) { data ->
                 data.asString() != "1"
             }
             Assertions.assertEquals(snd.asString(), "world")
@@ -56,13 +56,13 @@ class ByteInputStreamTester {
         }
 
         getStream().controller().use {
-            val empty = it.readUtil(2) { ahead ->
+            val empty = it.readUntil(2) { ahead ->
                 ahead.asString() != "ID"
             }
             Assertions.assertEquals(0, empty.bytes.size)
             val fst = it.read(3)
             Assertions.assertEquals("ID3", fst.asString())
-            val hello = it.readUtil(5) { ahead ->
+            val hello = it.readUntil(5) { ahead ->
                 ahead.asString() != "world"
             }
             Assertions.assertEquals("HELLO", hello.asString())
