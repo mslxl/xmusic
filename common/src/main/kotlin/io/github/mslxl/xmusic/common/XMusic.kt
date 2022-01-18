@@ -1,6 +1,7 @@
 package io.github.mslxl.xmusic.common
 
 import io.github.mslxl.xmusic.common.config.SourceConfig
+import io.github.mslxl.xmusic.common.fs.CacheIndexDBManager
 import io.github.mslxl.xmusic.common.fs.FileSystem
 import io.github.mslxl.xmusic.common.net.NetworkHandle
 import io.github.mslxl.xmusic.common.player.PlayerBinding
@@ -11,8 +12,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class XMusic(val fs: FileSystem, val controller: PlayerBinding) {
+class XMusic(
+    val fs: FileSystem,
+    val controller: PlayerBinding,
+    val cacheManager: CacheIndexDBManager
+) {
     val playlist = VirtualPlaylist()
+    val network = NetworkHandle(this)
 
     init {
         this::class.logger.info("XMusic core($version) init")
@@ -25,7 +31,7 @@ class XMusic(val fs: FileSystem, val controller: PlayerBinding) {
                 GlobalScope.launch(Dispatchers.IO) {
                     //TODO use option
                     val url = src.information.getURL(info, src.information.getOption(info).first())
-                    val file = NetworkHandle.download(src, url)
+                    val file = network.download(src, url)
                     controller.play(file, info)
                 }
             }

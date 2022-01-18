@@ -16,7 +16,6 @@ dependencies {
 
 
     api("com.google.code.gson:gson:2.8.9")
-    api("org.hsqldb:hsqldb:2.6.1")
     api("org.apache.httpcomponents:httpclient:4.5.13")
 
     api("org.slf4j:slf4j-api:2.0.0-alpha5")

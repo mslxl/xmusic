@@ -23,6 +23,7 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.0-native-mt")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.0-native-mt")
+    implementation("org.xerial:sqlite-jdbc:3.36.0.3")
 
     implementation("com.github.mslxl:KtSwing:2.1.3")
 
