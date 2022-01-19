@@ -6,7 +6,7 @@ import java.io.File
 
 object MusicUtils {
     private val logger = this::class.logger
-    private val defaultCover by lazy {
+    val defaultCover by lazy {
         File.createTempFile("default_cover.tmp", "png").apply {
             logger.info("Extract default cover to $absolutePath")
             outputStream().use { output ->
@@ -18,7 +18,7 @@ object MusicUtils {
     }
 
     fun getCoverFromMp3(file: File, cacheIndex: CacheIndexDBManager): File {
-        return cacheIndex.createFile(file.absolutePath) { targetFile ->
+        return cacheIndex.getOrInit("${file.absolutePath}-music_util") { targetFile ->
             logger.info("Parse ID3V2 tag from ${file.absolutePath}")
             file.inputStream()
                 .controller()

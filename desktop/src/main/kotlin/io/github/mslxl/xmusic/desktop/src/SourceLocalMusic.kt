@@ -9,6 +9,8 @@ import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.source.MusicSource
 import io.github.mslxl.xmusic.common.source.processor.CollectionProcessor
 import io.github.mslxl.xmusic.common.source.processor.SongProcessor
+import io.github.mslxl.xmusic.common.util.MusicUtils
+import io.github.mslxl.xmusic.desktop.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -35,13 +37,22 @@ class SourceLocalMusic : MusicSource {
             return suspendCoroutine { continuation ->
                 val file = File(entitySong.id)
                 val name = file.nameWithoutExtension
+                val cover = if (file.extension == "mp3") {
+                    MusicUtils.getCoverFromMp3(file, App.core.cacheManager).toURI().toURL()
+                } else {
+                    MusicUtils.defaultCover.toURI().toURL()
+                }
                 logger.info("Get info from file name '$name'")
                 if ('-' in name) {
                     val (singer, title) = name.split('-', limit = 2).map(String::trim)
                     continuation.resume(
                         listOf(
                             EntitySongInfo(
-                                parent = entitySong, id = entitySong.id, title = title, singer = singer, coverUrl = ""
+                                parent = entitySong,
+                                id = entitySong.id,
+                                title = title,
+                                singer = singer,
+                                coverUrl = cover
                             )
                         )
                     )
@@ -49,7 +60,11 @@ class SourceLocalMusic : MusicSource {
                     continuation.resume(
                         listOf(
                             EntitySongInfo(
-                                parent = entitySong, id = entitySong.id, title = name, singer = "Unknown", coverUrl = ""
+                                parent = entitySong,
+                                id = entitySong.id,
+                                title = name,
+                                singer = "Unknown",
+                                coverUrl = cover
                             )
                         )
                     )

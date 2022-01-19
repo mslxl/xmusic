@@ -58,7 +58,7 @@ class CacheIndexDBImpl : CacheIndexDBManager {
         insert(key, md5)
     }
 
-    override fun createFile(key: String, writer: (File) -> Unit): File {
+    override fun put(key: String, writer: (File) -> Unit) {
         val tmpFile = File(cacheDir, "${key.hashCode().toString(16)}.tmp")
         try {
             writer.invoke(tmpFile)
@@ -74,7 +74,13 @@ class CacheIndexDBImpl : CacheIndexDBManager {
             tmpFile.renameTo(dst)
         }
         insert(key, md5)
-        return dst
+    }
+
+    override fun getOrInit(key: String, writer: (File) -> Unit): File {
+        return get(key) ?: let {
+            put(key, writer)
+            get(key)!!
+        }
     }
 
 }

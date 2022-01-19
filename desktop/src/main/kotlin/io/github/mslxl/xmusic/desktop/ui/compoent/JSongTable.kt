@@ -1,5 +1,6 @@
 package io.github.mslxl.xmusic.desktop.ui.compoent
 
+import io.github.mslxl.ktswing.attr
 import io.github.mslxl.ktswing.component.*
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.onAction
@@ -10,6 +11,8 @@ import io.github.mslxl.xmusic.common.player.VirtualPlaylist
 import io.github.mslxl.xmusic.common.source.MusicSource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
+import java.awt.Dimension
+import java.awt.Image
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
@@ -27,7 +30,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
         override fun getRowCount(): Int = data.size
 
         override fun getColumnName(column: Int): String =
-            listOf("Cover", "Singer", "Name")[column]
+            listOf("Cover", "Name", "Singer")[column]
 
 
         override fun getColumnCount(): Int = 3
@@ -118,14 +121,33 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
                 }
             }
         })
-
+        tableComponent.columnModel.apply {
+            getColumn(0).apply {
+                preferredWidth = tableComponent.rowHeight
+                resizable = false
+            }
+            getColumn(1).apply {
+                preferredWidth = 120
+            }
+            getColumn(2).apply {
+                preferredWidth = 200
+            }
+        }
         tableComponent.setDefaultRenderer(
             Any::class.java
         ) { _, value, isSelected, _, row, column ->
             val value = value as EntitySongInfo
             val comp = when (column) {
-                0 -> swing<JComponent> {
-                    button("Cover ${value.coverUrl}")
+                0 -> swing {
+                    imageLabel {
+                        attr {
+                            val size = tableComponent.rowHeight
+                            preferredSize = Dimension(size, size)
+                            self.icon = ImageIcon(value.coverUrl).apply {
+                                image = image.getScaledInstance(size, size, Image.SCALE_DEFAULT)
+                            }
+                        }
+                    }
                 }
                 1 -> swing<JComponent> {
                     label(value.title)

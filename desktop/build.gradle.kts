@@ -25,7 +25,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.0-native-mt")
     implementation("org.xerial:sqlite-jdbc:3.36.0.3")
 
-    implementation("com.github.mslxl:KtSwing:2.1.3")
+    implementation("com.github.mslxl:KtSwing:2.1.4")
 
     implementation("uk.co.caprica:vlcj:4.7.1")
 

@@ -10,11 +10,20 @@ interface CacheIndexDBManager {
      */
     fun put(key: String, file: File)
 
-    fun createFile(key: String, writer: (File) -> Unit): File
+    /**
+     * Create a file, let [writer] write its content, then save it into database
+     */
+    fun put(key: String, writer: (File) -> Unit)
 
-    fun getOrPut(path: String, download: (path: String) -> File): File {
-        return get(path) ?: download.invoke(path).apply {
-            put(path, this)
+    /**
+     * Create a file and init it if not exists, or return it
+     */
+    fun getOrInit(key: String, writer: (File) -> Unit): File
+
+
+    fun getOrPut(key: String, download: (key: String) -> File): File {
+        return get(key) ?: download.invoke(key).apply {
+            put(key, this)
         }
     }
 
