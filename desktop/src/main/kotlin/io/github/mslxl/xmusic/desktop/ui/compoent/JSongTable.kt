@@ -175,7 +175,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
                 while (loaded < targetLoad && sequence.hasNext()) {
                     val elem = sequence.next()
                     val song = musicSource.information.getInfo(elem)
-                    song.forEach(tableModel::add)
+                    tableModel.add(song)
                     loaded++
                 }
                 if (!sequence.hasNext()) {

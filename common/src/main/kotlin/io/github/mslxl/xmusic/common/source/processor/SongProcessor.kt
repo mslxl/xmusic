@@ -5,7 +5,7 @@ import io.github.mslxl.xmusic.common.entity.EntitySongInfo
 import java.net.URL
 
 interface SongProcessor {
-    suspend fun getInfo(entitySong: EntitySong): List<EntitySongInfo>
+    suspend fun getInfo(entitySong: EntitySong): EntitySongInfo
 
     /**
      * Get download URL of a music part, X-Music will download it later.

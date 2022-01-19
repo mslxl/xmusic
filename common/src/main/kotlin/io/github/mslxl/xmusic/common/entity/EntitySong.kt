@@ -10,7 +10,6 @@ import java.util.*
  * The detail will store in local database, if it not exists, program will query Source.
  * Query result should be [EntitySongInfo]
  *
- * Attention! A [EntitySong] may have many parts, it's likes BiliBili's video parts.
  */
 data class EntitySong(
     val id: String,
