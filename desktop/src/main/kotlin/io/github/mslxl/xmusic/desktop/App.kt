@@ -16,6 +16,7 @@ import io.github.mslxl.xmusic.desktop.player.VlcjControl
 import io.github.mslxl.xmusic.desktop.src.SourceLocalMusic
 import io.github.mslxl.xmusic.desktop.ui.*
 import java.awt.CardLayout
+import java.lang.NullPointerException
 import javax.swing.JDialog
 import javax.swing.JFrame
 import javax.swing.JPanel
@@ -46,8 +47,8 @@ object App {
             UIManager.setLookAndFeel(DarculaLaf())
             JFrame.setDefaultLookAndFeelDecorated(true)
             JDialog.setDefaultLookAndFeelDecorated(true)
-        } catch (e: Exception) {
-            logger.warn("Fail to use darcula LAF")
+        } catch (e: ExceptionInInitializerError) {
+            logger.warn("Fail to use darcula LAF", e)
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
         }
         logger.info("XMusic desktop($version) start")
@@ -63,11 +64,11 @@ object App {
             borderLayout {
                 left {
                     add(
-                        sideBar(
-                            onDiscoveryAction = { showCard("Discovery") },
-                            onMineAction = { showCard("My") },
-                            onSettingAction = { showCard("Setting") }
-                        ))
+                            sideBar(
+                                    onDiscoveryAction = { showCard("Discovery") },
+                                    onMineAction = { showCard("My") },
+                                    onSettingAction = { showCard("Setting") }
+                            ))
                 }
                 center {
                     panel {
