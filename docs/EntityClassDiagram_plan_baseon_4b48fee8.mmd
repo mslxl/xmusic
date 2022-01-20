@@ -1,0 +1,175 @@
+classDiagram-v2
+
+    class AlbumProcessor{
+        <<interface>>
+        +getContent(EntityAlbum) EntitySong
+        +getInformation(EntityAlbum) EntityAlbumInfo
+    }
+
+    class CollectionProcessor {
+        <<interface>>
+        +getAllCollection() Sequence~EntityCollection~
+        +getName(EntityCollection) String
+        +getContent(EntityCollection) Sequence~EntitySong~
+    }
+
+    class LoginStatus {
+        <<enumeration>>
+        SUCCESS
+        UNKNOWN_ERROR
+        NEED_CAP
+        UNSUPPORTED
+    }
+
+    class ExplorerProcessor~T : Explorable~ {
+        <<interface>>
+        +refresh()* Sequence~T~
+    }
+
+    class LoginProcessor {
+        <<interface>>
+        +Boolean supportPwd
+
+        +pwdLogin(username: String, password: String, cap: String) LoginStatus
+
+        +Boolean supportPhone
+
+        +phoneRequestVerifyCode(num: Int, cap: String) LoginStatus
+
+        +phoneLogin(num: Int, verifyCode: String, cal: String) LoginStatus
+    }
+
+    class SearchProcessor {
+        <<interface>>
+        +search(String) Sequence~EntitySong~
+    }
+
+    class SongProcessor {
+        <<interface>>
+        +getInfo(entitySong: EntitySong) EntitySongInfo
+        +getURL(info: EntitySongInfo, option: String) URL
+        +getOption(info: EntitySongInfo) List~String~
+    }
+
+
+    class MusicSource{
+        <<interface>>
+        +SongProcessor information
+        +SearchProcessor search
+        +Map~I18nKey, ExplorerProcessor~ discovery
+        +AlbumProcessor album
+        +CollectionProcessor collection
+
+        ~acceptConfig(config)
+    }
+
+    class EntitySong{
+        +String id
+        +SourceId source
+        +Boolean expandable
+    }
+    
+    class EntitySongInfo{
+        +EntitySong parent
+        +String id
+        +String title
+        +String singer  
+        +URL coverUrl
+    }
+
+    class EntityCollection{
+        +String id
+        +SourceID source
+        +String uuid
+    }
+    class EntityAlbum{
+        +String id
+        +SourceID source
+        +String uuid
+    }
+    class EntityAlbumInfo{
+        +String name
+        +String desc
+        +String creator
+        +URL coverUrl
+        +Map~String, Any~ data
+    }
+
+    LoginStatus -- LoginProcessor : Request reuslt
+
+    MusicSource *-- AlbumProcessor : Provide feture
+    MusicSource *-- CollectionProcessor : Provide feture
+    MusicSource *-- LoginProcessor : Provide feture
+    MusicSource *-- "many" ExplorerProcessor : Provide feture
+    MusicSource *-- SongProcessor : Provide feture
+    MusicSource *-- SearchProcessor : Provide feture
+
+    class XMusic {
+        +String version
+        +List~String~ acceptExt
+        ~FileSystem fs
+        ~Playbinding controller
+        ~CacheIndexDbManager cacheManager
+        -Playlist playlist
+        +NetworkHandle network
+
+        +addMusicSource(MusicSource)
+        +getSrc(SourceId) MusicSource
+        +getCfg(SourceId) Config
+    }
+    class NetworkHandle{
+        download(URL) File
+    }
+    class Playbinding{
+        <<interface>>
+        play(EntitySongInfomation)
+    }
+
+    class Playlist{
+        ~List<EntitySongMusic> data
+        Int currentPlaying pos
+        next()
+        prev()
+    }
+    Playbinding --> XMusic: Compose
+    NetworkHandle --> XMusic: Compose
+    EntitySongInfo "many" --> Playlist: Contain
+    Playlist --* "be notice by" Playbinding: Play music
+    Playbinding .. NetworkHandle : Download file according to EntitySongInfo indirectly
+    LoginProcessor -- NetworkHandle : Edit NetworkHandle for user info
+
+    XMusic <-- "many" MusicSource : Contains
+
+    CollectionProcessor .. "as resultes of" EntityCollection : Query by getAllCollection()
+    SearchProcessor .. "as resultes of" EntitySong : Query by search()
+
+    EntitySong "1" o-- "1..*" EntitySongInfo: Query by SongProcessor getInfo()
+    EntityAlbum o-- EntityAlbumInfo: Query by AlbumProcessor getInformation()
+    EntityAlbum "1" o-- "*" EntitySongInfo: Query by AlbumProcessor getContent()
+    EntityCollection "1" o-- "*" EntitySongInfo: Query by CollectionProcessor getContent()
+
+    EntitySongInfo "get info from EntitySong"  .. SongProcessor: Query information
+    EntitySongInfo "get content from EntitySong" .. CollectionProcessor: Query content
+    EntitySongInfo "get content from EntitySong" .. AlbumProcessor: Query content
+
+
+    class ExplorerAlbumProcessor{
+        <<interface>>
+        +refresh() Sequence~EntityAlbum~
+    }
+    class ExplorerCollectionProcessor{
+        <<interface>>
+        +refresh() Sequence~EntityCollection~
+    }
+    class ExplorerSongProcessor{
+        <<interface>>
+        +refresh() Sequence~EntitySong~
+    }
+
+    ExplorerAlbumProcessor ..|> ExplorerProcessor~EntityAlbum~
+    ExplorerCollectionProcessor ..|> ExplorerProcessor~EntityCollection~
+    ExplorerSongProcessor ..|> ExplorerProcessor~EntitySong~
+
+    EntityAlbum .. "as result of" ExplorerAlbumProcessor
+    EntityCollection .. "as result of" ExplorerCollectionProcessor
+    EntitySong .. "as result of" ExplorerSongProcessor
