@@ -131,7 +131,7 @@ private fun CanAddChildrenScope<*>.songImageLabel() {
         VlcjControl.addPlayInfoListener { info, cacheFile ->
             // Download image and show it
             val coverFile =
-                App.core.network.download(App.core.getSrc(info.parent.source), info.coverUrl,  true)
+                App.core.network.download(App.core.getSrc(info.index.source), info.coverUrl, true)
             self.icon = ImageIcon(coverFile.inputStream().readBytes()).scalaImageIcon(64)
         }
     }

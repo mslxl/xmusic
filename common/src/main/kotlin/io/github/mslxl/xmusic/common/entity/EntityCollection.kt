@@ -1,11 +1,8 @@
 package io.github.mslxl.xmusic.common.entity
 
-import java.net.URL
-
-data class EntityAlbum(
-    val index: EntityAlbumIndex,
+data class EntityCollection(
+    val index: EntityCollectionIndex,
     val name: String,
     val desc: String,
     val creator: String,
-    val coverUrl: URL,
 )

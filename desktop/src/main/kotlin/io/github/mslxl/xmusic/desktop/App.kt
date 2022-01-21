@@ -16,7 +16,6 @@ import io.github.mslxl.xmusic.desktop.player.VlcjControl
 import io.github.mslxl.xmusic.desktop.src.SourceLocalMusic
 import io.github.mslxl.xmusic.desktop.ui.*
 import java.awt.CardLayout
-import java.lang.NullPointerException
 import javax.swing.JDialog
 import javax.swing.JFrame
 import javax.swing.JPanel
@@ -34,7 +33,6 @@ object App {
     lateinit var centerPane: JPanel
     var currentShowCard = ""
     private fun showCard(cardName: String) {
-        //TODO use slf4j instead of raw stdio
         logger.info("show card $cardName")
         cardLayout.show(centerPane, cardName)
         centerPane.updateUI()

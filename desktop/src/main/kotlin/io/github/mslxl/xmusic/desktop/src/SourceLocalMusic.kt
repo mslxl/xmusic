@@ -2,6 +2,7 @@ package io.github.mslxl.xmusic.desktop.src
 
 import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.config.SourceConfig
+import io.github.mslxl.xmusic.common.entity.EntityCollection
 import io.github.mslxl.xmusic.common.entity.EntityCollectionIndex
 import io.github.mslxl.xmusic.common.entity.EntitySong
 import io.github.mslxl.xmusic.common.entity.EntitySongIndex
@@ -42,13 +43,13 @@ class SourceLocalMusic : MusicSource {
                 } else {
                     MusicUtils.defaultCover.toURI().toURL()
                 }
-                logger.info("Get info from file name '$name'")
+                logger.info("Get title and singer from filename '$name'")
                 if ('-' in name) {
                     val (singer, title) = name.split('-', limit = 2).map(String::trim)
                     continuation.resume(
                         sequenceOf(
                             EntitySong(
-                                parent = entitySongPreview,
+                                index = entitySongPreview,
                                 id = entitySongPreview.id,
                                 title = title,
                                 singer = singer,
@@ -60,7 +61,7 @@ class SourceLocalMusic : MusicSource {
                     continuation.resume(
                         sequenceOf(
                             EntitySong(
-                                parent = entitySongPreview,
+                                index = entitySongPreview,
                                 id = entitySongPreview.id,
                                 title = name,
                                 singer = "Unknown",
@@ -73,7 +74,7 @@ class SourceLocalMusic : MusicSource {
         }
 
         override suspend fun getURL(info: EntitySong, option: String): URL {
-            return File(info.parent.id).toURI().toURL()
+            return File(info.index.id).toURI().toURL()
         }
     }
 
@@ -112,8 +113,13 @@ class SourceLocalMusic : MusicSource {
             } ?: emptySequence()
         }
 
-        override suspend fun getName(entity: EntityCollectionIndex): String {
-            return entity.id.ifBlank { "Uncatalogued" }
+        override suspend fun getDetail(entity: EntityCollectionIndex): EntityCollection {
+            return EntityCollection(
+                index = entity,
+                name = entity.id.ifBlank { "Uncatalogued" },
+                desc = "Local music in folder ${entity.id}",
+                creator = "Filesystem"
+            )
         }
 
         override suspend fun getContent(entity: EntityCollectionIndex): Sequence<EntitySongIndex> {
