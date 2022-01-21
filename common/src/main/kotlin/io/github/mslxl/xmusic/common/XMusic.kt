@@ -23,10 +23,11 @@ class XMusic(
     init {
         this::class.logger.info("XMusic core($version) init")
 
+        // bind playlist and player
         playlist.addCurrentChangeListener {
             it?.let { info ->
                 controller.stop()
-                val srcId = info.parent.source
+                val srcId = info.index.source
                 val src = getSrc(srcId)
                 GlobalScope.launch(Dispatchers.IO) {
                     //TODO use option

@@ -37,12 +37,6 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
 
 
         override fun getValueAt(rowIndex: Int, columnIndex: Int): Any {
-//            return when (columnIndex) {
-//                0 -> data[rowIndex].coverUrl
-//                1 -> data[rowIndex].singer
-//                2 -> data[rowIndex].title
-//                else -> error("Unknown rowIndex $rowIndex")
-//            }
             return data[rowIndex]
         }
 
@@ -86,6 +80,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
             rowHeight = 40
             model = tableModel
         }
+        // right click cell to show popup menu
         tableComponent.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 if (tableComponent.selectedRow >= 0) {
@@ -121,6 +116,8 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
                 }
             }
         })
+
+        // set width of table column
         tableComponent.columnModel.apply {
             getColumn(0).apply {
                 preferredWidth = tableComponent.rowHeight
@@ -133,6 +130,8 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
                 preferredWidth = 200
             }
         }
+
+        // set default renderer to show different field
         tableComponent.setDefaultRenderer(
             Any::class.java
         ) { _, value, isSelected, _, row, column ->
@@ -165,9 +164,12 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
 
     }
 
-
+    /**
+     * start load from [sequence]
+     * it will create a coroutine and then work in IO-worker thread
+     */
     private fun fireLoadFromSequence() {
-        if (jobLoad == null || !jobLoad!!.isActive) {
+        if (jobLoad == null || jobLoad?.isActive == false) {
             logger.info("trigger load")
             jobLoad = GlobalScope.launch(Dispatchers.IO) {
                 var loaded = 0
