@@ -5,7 +5,7 @@ import io.github.mslxl.ktswing.component.*
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.onAction
 import io.github.mslxl.xmusic.common.entity.EntitySong
-import io.github.mslxl.xmusic.common.entity.EntitySongInfo
+import io.github.mslxl.xmusic.common.entity.EntitySongIndex
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.player.VirtualPlaylist
 import io.github.mslxl.xmusic.common.source.MusicSource
@@ -25,8 +25,8 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
 
 
     class SongTableModel : AbstractTableModel() {
-        private val data = arrayListOf<EntitySongInfo>()
-        val listData: List<EntitySongInfo> get() = data
+        private val data = arrayListOf<EntitySong>()
+        val listData: List<EntitySong> get() = data
         override fun getRowCount(): Int = data.size
 
         override fun getColumnName(column: Int): String =
@@ -46,7 +46,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
             return data[rowIndex]
         }
 
-        fun add(element: EntitySongInfo) {
+        fun add(element: EntitySong) {
             data.add(element)
         }
 
@@ -63,7 +63,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
     val tableComponent = JTable()
     val tableModel = SongTableModel()
 
-    private var sequence: Iterator<EntitySong> = iterator { } // Table will load src from this sequence
+    private var sequence: Iterator<EntitySongIndex> = iterator { } // Table will load src from this sequence
     private var jobLoad: Job? = null // Loading job from coroutine
     private var isSequenceFin = true // Is there anything remain in sequence
 
@@ -136,7 +136,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
         tableComponent.setDefaultRenderer(
             Any::class.java
         ) { _, value, isSelected, _, row, column ->
-            val value = value as EntitySongInfo
+            val value = value as EntitySong
             val comp = when (column) {
                 0 -> swing {
                     imageLabel {
@@ -174,8 +174,8 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
                 val targetLoad = 20
                 while (loaded < targetLoad && sequence.hasNext()) {
                     val elem = sequence.next()
-                    val song = musicSource.information.getInfo(elem)
-                    tableModel.add(song)
+                    val songs = musicSource.information.getDetail(elem)
+                    songs.forEach(tableModel::add)
                     loaded++
                 }
                 if (!sequence.hasNext()) {
@@ -188,7 +188,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
         }
     }
 
-    fun setDataSource(data: Sequence<EntitySong>) {
+    fun setDataSource(data: Sequence<EntitySongIndex>) {
         logger.info("data source changed")
         sequence = data.iterator()
         isSequenceFin = false

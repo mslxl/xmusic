@@ -1,10 +1,10 @@
 package io.github.mslxl.xmusic.common.player
 
-import io.github.mslxl.xmusic.common.entity.EntitySongInfo
+import io.github.mslxl.xmusic.common.entity.EntitySong
 import java.io.File
 
 interface PlayerBinding {
-    fun play(file: File, info: EntitySongInfo)
+    fun play(file: File, info: EntitySong)
     fun stop()
     fun watchPlayEnd(watcher: () -> Unit)
 }

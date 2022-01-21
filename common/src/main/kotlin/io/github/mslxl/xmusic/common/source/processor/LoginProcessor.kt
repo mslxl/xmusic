@@ -26,5 +26,6 @@ interface LoginProcessor {
         return LoginStatus.UNSUPPORTED
     }
 
-
+    fun preRequest(tag: String)
+    fun postRequest(tag: String)
 }

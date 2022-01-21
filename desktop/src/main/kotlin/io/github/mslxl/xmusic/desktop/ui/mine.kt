@@ -8,7 +8,7 @@ import io.github.mslxl.ktswing.component.splitPane
 import io.github.mslxl.ktswing.component.tabbedPane
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayoutCenter
-import io.github.mslxl.xmusic.common.entity.EntityCollection
+import io.github.mslxl.xmusic.common.entity.EntityCollectionIndex
 import io.github.mslxl.xmusic.desktop.App
 import io.github.mslxl.xmusic.desktop.ui.compoent.JSongTable
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +45,7 @@ fun myFavPane(): JComponent {
 
                                 val leftList: JList<String>
                                 val rightTable = JSongTable(src, App.core.playlist)
-                                val collectionDataList = arrayListOf<EntityCollection>()
+                                val collectionDataList = arrayListOf<EntityCollectionIndex>()
                                 scrollPane {
                                     leftList = list<String>(defModel) {
                                         attr {

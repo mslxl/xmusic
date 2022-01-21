@@ -3,7 +3,9 @@ package io.github.mslxl.xmusic.common.source
 import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.config.SourceConfig
 import io.github.mslxl.xmusic.common.i18n.I18nKey
+import io.github.mslxl.xmusic.common.net.NetworkHandle
 import io.github.mslxl.xmusic.common.source.processor.*
+import io.github.mslxl.xmusic.common.source.processor.ExplorerProcessor
 
 /**
  * Provide information of song from different source
@@ -22,9 +24,6 @@ interface MusicSource {
         get() = "XMusic/${XMusic.version}"
 
     val information: SongProcessor
-
-    val search: SearchProcessor?
-        get() = null
 
     val discovery: Map<I18nKey, ExplorerProcessor<*>>?
         get() = null

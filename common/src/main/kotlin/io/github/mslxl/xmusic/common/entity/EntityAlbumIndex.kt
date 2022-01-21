@@ -5,13 +5,15 @@ import io.github.mslxl.xmusic.common.source.processor.Explorable
 import java.util.*
 
 /**
- * Your Collection
+ * The function of [EntityAlbumIndex] as same as [EntitySongIndex]
+ * Its content will provide by database or source
  */
-data class EntityCollection(
+
+data class EntityAlbumIndex(
     val id: String,
-    val source: SourceID
+    val sourceID: SourceID
 ) : Explorable {
     val uuid by lazy {
-        UUID.fromString("song$id$source")
+        UUID.fromString("album$id$sourceID")
     }
 }

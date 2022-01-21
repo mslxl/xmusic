@@ -2,9 +2,9 @@ package io.github.mslxl.xmusic.desktop.src
 
 import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.config.SourceConfig
-import io.github.mslxl.xmusic.common.entity.EntityCollection
+import io.github.mslxl.xmusic.common.entity.EntityCollectionIndex
 import io.github.mslxl.xmusic.common.entity.EntitySong
-import io.github.mslxl.xmusic.common.entity.EntitySongInfo
+import io.github.mslxl.xmusic.common.entity.EntitySongIndex
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.source.MusicSource
 import io.github.mslxl.xmusic.common.source.processor.CollectionProcessor
@@ -33,9 +33,9 @@ class SourceLocalMusic : MusicSource {
 
 
     override val information = object : SongProcessor {
-        override suspend fun getInfo(entitySong: EntitySong): List<EntitySongInfo> {
+        override suspend fun getDetail(entitySongPreview: EntitySongIndex): Sequence<EntitySong> {
             return suspendCoroutine { continuation ->
-                val file = File(entitySong.id)
+                val file = File(entitySongPreview.id)
                 val name = file.nameWithoutExtension
                 val cover = if (file.extension == "mp3") {
                     MusicUtils.getCoverFromMp3(file, App.core.cacheManager).toURI().toURL()
@@ -46,10 +46,10 @@ class SourceLocalMusic : MusicSource {
                 if ('-' in name) {
                     val (singer, title) = name.split('-', limit = 2).map(String::trim)
                     continuation.resume(
-                        listOf(
-                            EntitySongInfo(
-                                parent = entitySong,
-                                id = entitySong.id,
+                        sequenceOf(
+                            EntitySong(
+                                parent = entitySongPreview,
+                                id = entitySongPreview.id,
                                 title = title,
                                 singer = singer,
                                 coverUrl = cover
@@ -58,10 +58,10 @@ class SourceLocalMusic : MusicSource {
                     )
                 } else {
                     continuation.resume(
-                        listOf(
-                            EntitySongInfo(
-                                parent = entitySong,
-                                id = entitySong.id,
+                        sequenceOf(
+                            EntitySong(
+                                parent = entitySongPreview,
+                                id = entitySongPreview.id,
                                 title = name,
                                 singer = "Unknown",
                                 coverUrl = cover
@@ -72,7 +72,7 @@ class SourceLocalMusic : MusicSource {
             }
         }
 
-        override suspend fun getURL(info: EntitySongInfo, option: String): URL {
+        override suspend fun getURL(info: EntitySong, option: String): URL {
             return File(info.parent.id).toURI().toURL()
         }
     }
@@ -100,25 +100,25 @@ class SourceLocalMusic : MusicSource {
             }
         }
 
-        override suspend fun getAllCollection(): Sequence<EntityCollection> {
+        override suspend fun getAllCollection(): Sequence<EntityCollectionIndex> {
             return config.getNullable("path")?.let { path ->
                 val root = File(path)
                 // The code that I wrote is so ugly
                 withContext(Dispatchers.IO) {
                     listMusicDir(root, root).map {
-                        EntityCollection(it, this@SourceLocalMusic.id)
+                        EntityCollectionIndex(it, this@SourceLocalMusic.id)
                     }
                 }
             } ?: emptySequence()
         }
 
-        override suspend fun getName(entity: EntityCollection): String {
+        override suspend fun getName(entity: EntityCollectionIndex): String {
             return entity.id.ifBlank { "Uncatalogued" }
         }
 
-        override suspend fun getContent(entity: EntityCollection): Sequence<EntitySong> {
+        override suspend fun getContent(entity: EntityCollectionIndex): Sequence<EntitySongIndex> {
             return musicCatalog[entity.id]!!.map {
-                EntitySong(it.absolutePath, this@SourceLocalMusic.id)
+                EntitySongIndex(it.absolutePath, this@SourceLocalMusic.id)
             }.asSequence()
         }
     }

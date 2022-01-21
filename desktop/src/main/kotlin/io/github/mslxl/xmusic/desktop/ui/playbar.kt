@@ -7,7 +7,7 @@ import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayout
 import io.github.mslxl.ktswing.layout.borderLayoutCenter
 import io.github.mslxl.ktswing.onAction
-import io.github.mslxl.xmusic.common.entity.EntitySongInfo
+import io.github.mslxl.xmusic.common.entity.EntitySong
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.player.VirtualPlaylist
 import io.github.mslxl.xmusic.common.util.MusicUtils
@@ -129,8 +129,9 @@ private fun CanAddChildrenScope<*>.songImageLabel() {
         }
         self.icon = ImageIcon(MusicUtils.defaultCover.toURI().toURL()).scalaImageIcon(64)
         VlcjControl.addPlayInfoListener { info, cacheFile ->
+            // Download image and show it
             val coverFile =
-                App.core.network.download(App.core.getSrc(info.parent.source), info.coverUrl, true)
+                App.core.network.download(App.core.getSrc(info.parent.source), info.coverUrl,  true)
             self.icon = ImageIcon(coverFile.inputStream().readBytes()).scalaImageIcon(64)
         }
     }
@@ -221,7 +222,7 @@ private fun audioPopupPanel(currentVolume: Int, onChange: (Int) -> Unit) = swing
 }
 
 private fun playListPopupPanel(): JComponent {
-    val listModel = object : AbstractListModel<EntitySongInfo>() {
+    val listModel = object : AbstractListModel<EntitySong>() {
         val playlist = App.core.playlist
         var lastUpdateIdx = 0
 
@@ -244,14 +245,14 @@ private fun playListPopupPanel(): JComponent {
         override fun getSize(): Int = playlist.size
 
 
-        override fun getElementAt(index: Int): EntitySongInfo = playlist.list[index]
+        override fun getElementAt(index: Int): EntitySong = playlist.list[index]
 
     }
-    val listRenderer = object : ListCellRenderer<EntitySongInfo> {
+    val listRenderer = object : ListCellRenderer<EntitySong> {
         val playlist = App.core.playlist
         override fun getListCellRendererComponent(
-            list: JList<out EntitySongInfo>?,
-            value: EntitySongInfo?,
+            list: JList<out EntitySong>?,
+            value: EntitySong?,
             index: Int,
             isSelected: Boolean,
             cellHasFocus: Boolean
@@ -311,7 +312,7 @@ private fun playListPopupPanel(): JComponent {
                 }
                 center {
                     scrollPane {
-                        list<EntitySongInfo> {
+                        list<EntitySong> {
                             attr {
                                 model = listModel
                                 cellRenderer = listRenderer

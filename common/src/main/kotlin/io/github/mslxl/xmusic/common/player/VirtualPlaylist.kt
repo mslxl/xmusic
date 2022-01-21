@@ -1,6 +1,6 @@
 package io.github.mslxl.xmusic.common.player
 
-import io.github.mslxl.xmusic.common.entity.EntitySongInfo
+import io.github.mslxl.xmusic.common.entity.EntitySong
 import io.github.mslxl.xmusic.common.logger
 import kotlin.random.Random
 
@@ -15,14 +15,14 @@ class VirtualPlaylist {
         private val logger = VirtualPlaylist::class.logger
     }
 
-    private val data = arrayListOf<EntitySongInfo>()
+    private val data = arrayListOf<EntitySong>()
     var playMode = PlayMode.IN_ORDER
         set(value) {
             field = value
             logger.info("switch play mode to $value")
         }
 
-    val list: List<EntitySongInfo> get() = data
+    val list: List<EntitySong> get() = data
     val size get() = list.size
 
     /**
@@ -34,9 +34,9 @@ class VirtualPlaylist {
         else field
 
     private val listChangeListener = arrayListOf<() -> Unit>()
-    private val currentChangeListener = arrayListOf<(EntitySongInfo?) -> Unit>()
+    private val currentChangeListener = arrayListOf<(EntitySong?) -> Unit>()
 
-    operator fun contains(song: EntitySongInfo): Boolean {
+    operator fun contains(song: EntitySong): Boolean {
         return song in data
     }
 
@@ -79,7 +79,7 @@ class VirtualPlaylist {
         listChangeListener.add(listener)
     }
 
-    fun addCurrentChangeListener(listener: (current: EntitySongInfo?) -> Unit) {
+    fun addCurrentChangeListener(listener: (current: EntitySong?) -> Unit) {
         currentChangeListener.add(listener)
     }
 
@@ -87,44 +87,44 @@ class VirtualPlaylist {
         listChangeListener.remove(listener)
     }
 
-    fun removeCurrentChangeListener(listener: (current: EntitySongInfo?) -> Unit) {
+    fun removeCurrentChangeListener(listener: (current: EntitySong?) -> Unit) {
         currentChangeListener.remove(listener)
     }
 
-    fun replace(entitySongInfo: EntitySongInfo) {
+    fun replace(entitySong: EntitySong) {
         data.clear()
-        data.add(entitySongInfo)
+        data.add(entitySong)
         notifyListChange()
         handleCurrentPos()
     }
 
-    fun replace(entitySongInfo: List<EntitySongInfo>) {
+    fun replace(entitySong: List<EntitySong>) {
         data.clear()
-        data.addAll(entitySongInfo)
+        data.addAll(entitySong)
         notifyListChange()
         handleCurrentPos()
     }
 
-    fun add(entitySongInfo: EntitySongInfo) {
-        data.add(entitySongInfo)
+    fun add(entitySong: EntitySong) {
+        data.add(entitySong)
         notifyListChange()
         handleCurrentPos()
     }
 
-    fun add(entitySongInfo: List<EntitySongInfo>) {
-        data.addAll(entitySongInfo)
+    fun add(entitySong: List<EntitySong>) {
+        data.addAll(entitySong)
         notifyListChange()
         handleCurrentPos()
     }
 
-    fun addAfterCurrent(entitySongInfo: EntitySongInfo) {
-        data.add(currentPos + 1, entitySongInfo)
+    fun addAfterCurrent(entitySong: EntitySong) {
+        data.add(currentPos + 1, entitySong)
         notifyListChange()
         handleCurrentPos()
     }
 
-    fun addAfterCurrent(entitySongInfo: List<EntitySongInfo>) {
-        data.addAll(currentPos + 1, entitySongInfo)
+    fun addAfterCurrent(entitySong: List<EntitySong>) {
+        data.addAll(currentPos + 1, entitySong)
         notifyListChange()
         handleCurrentPos()
     }
