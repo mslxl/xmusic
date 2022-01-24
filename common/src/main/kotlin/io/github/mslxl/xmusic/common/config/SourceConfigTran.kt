@@ -9,7 +9,7 @@ class SourceConfigTran internal constructor(private val before: SourceConfig) : 
         before.save()
     }
 
-    override fun listAllMarks(): MutableSet<MutableMap.MutableEntry<String, ConfigItem>> = before.listAllMarks()
+    override fun listAllMarks(): MutableSet<MutableMap.MutableEntry<String, ItemIndex>> = before.listAllMarks()
 
     fun trash() {
         this.properties = before.properties

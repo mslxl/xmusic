@@ -12,7 +12,7 @@ open class SourceConfig(internal val fs: FileSystem, val id: SourceID) {
         object PASSWORD : ItemType()
     }
 
-    class ConfigItem(val key: String, val name: String, val type: ItemType)
+    class ItemIndex(val key: String, val name: String, val type: ItemType)
 
     var gson: Gson = GsonBuilder().serializeNulls().serializeNulls().create()
     open var properties = Properties().apply {
@@ -25,7 +25,7 @@ open class SourceConfig(internal val fs: FileSystem, val id: SourceID) {
     /**
      * itemType: HashMap<ItemKey, Pair<ItemName, ItemType>>
      */
-    private val itemType: HashMap<String, ConfigItem> = hashMapOf()
+    private val itemType: HashMap<String, ItemIndex> = hashMapOf()
 
     fun save() {
         fs.openOutputStream(listOf("src_cfg"), "$id.properties").bufferedWriter().use {
@@ -51,7 +51,7 @@ open class SourceConfig(internal val fs: FileSystem, val id: SourceID) {
     }
 
     fun markType(key: String, name: String, type: ItemType) {
-        itemType[key] = ConfigItem(key, name, type)
+        itemType[key] = ItemIndex(key, name, type)
     }
 
     open fun listAllMarks() = itemType.entries

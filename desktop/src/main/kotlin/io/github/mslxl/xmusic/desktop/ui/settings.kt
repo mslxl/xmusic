@@ -11,7 +11,7 @@ import io.github.mslxl.ktswing.layout.borderLayout
 import io.github.mslxl.ktswing.layout.borderLayoutCenter
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.desktop.App
-import io.github.mslxl.xmusic.desktop.ui.compoent.JConfigItemList
+import io.github.mslxl.xmusic.desktop.ui.compoent.config.JConfigItemList
 import io.github.mslxl.xmusic.desktop.ui.subpage.aboutPage
 import javax.swing.BorderFactory
 import javax.swing.JTabbedPane
@@ -42,15 +42,19 @@ fun settingsPane(): JTabbedPane {
                             }
                             bottom {
                                 hBox {
+                                    attr {
+                                        border = BorderFactory.createEmptyBorder(0, 0, 10, 0)
+                                    }
                                     glue
                                     button("Apply").addActionListener {
                                         logger.info("$srcName config commit")
                                         trans.commit()
                                     }
-                                    glue
+                                    struct(20)
                                     button("Cancel").addActionListener {
                                         logger.info("Trash modified config")
-                                        TODO()
+                                        trans = sourceConfig.transact()
+                                        configComponentList.reload(trans)
                                     }
                                     glue
                                 }
