@@ -31,6 +31,7 @@ fun playBar(): JPanel {
             borderLayoutCenter {
                 hBox {
                     songImageLabel()
+                    struct(2)
                     songTitleLabel()
                     glue
                     vBox {
