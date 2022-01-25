@@ -3,9 +3,10 @@ package io.github.mslxl.xmusic.common.source
 import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.config.SourceConfig
 import io.github.mslxl.xmusic.common.i18n.I18nKey
-import io.github.mslxl.xmusic.common.net.NetworkHandle
-import io.github.mslxl.xmusic.common.source.processor.*
+import io.github.mslxl.xmusic.common.source.processor.AlbumProcessor
+import io.github.mslxl.xmusic.common.source.processor.CollectionProcessor
 import io.github.mslxl.xmusic.common.source.processor.ExplorerProcessor
+import io.github.mslxl.xmusic.common.source.processor.SongProcessor
 
 /**
  * Provide information of song from different source
@@ -19,6 +20,7 @@ interface MusicSource {
     val name: String
     val id: SourceID
         get() = name.hashCode().toString()
+    var core: XMusic
 
     val userAgent: String
         get() = "XMusic/${XMusic.version}"

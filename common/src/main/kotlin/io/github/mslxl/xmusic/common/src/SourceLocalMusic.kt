@@ -1,4 +1,4 @@
-package io.github.mslxl.xmusic.desktop.src
+package io.github.mslxl.xmusic.common.src
 
 import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.config.SourceConfig
@@ -11,7 +11,6 @@ import io.github.mslxl.xmusic.common.source.MusicSource
 import io.github.mslxl.xmusic.common.source.processor.CollectionProcessor
 import io.github.mslxl.xmusic.common.source.processor.SongProcessor
 import io.github.mslxl.xmusic.common.util.MusicUtils
-import io.github.mslxl.xmusic.desktop.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -22,7 +21,7 @@ import kotlin.coroutines.suspendCoroutine
 /**
  *
  */
-class SourceLocalMusic : MusicSource {
+class SourceLocalMusic(override var core: XMusic) : MusicSource {
     companion object {
         private val logger = SourceLocalMusic::class.logger
     }
@@ -39,7 +38,7 @@ class SourceLocalMusic : MusicSource {
                 val file = File(entitySongPreview.id)
                 val name = file.nameWithoutExtension
                 val cover = if (file.extension == "mp3") {
-                    MusicUtils.getCoverFromMp3(file, App.core.cacheManager).toURI().toURL()
+                    MusicUtils.getCoverFromMp3(file, core.cacheManager).toURI().toURL()
                 } else {
                     MusicUtils.defaultCover.toURI().toURL()
                 }

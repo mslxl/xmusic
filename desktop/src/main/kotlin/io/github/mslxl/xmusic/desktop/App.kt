@@ -10,10 +10,10 @@ import io.github.mslxl.ktswing.layout.cardLayout
 import io.github.mslxl.ktswing.resizable
 import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.logger
+import io.github.mslxl.xmusic.common.src.SourceLocalMusic
 import io.github.mslxl.xmusic.desktop.fs.CacheIndexDBImpl
 import io.github.mslxl.xmusic.desktop.fs.LocalFile
 import io.github.mslxl.xmusic.desktop.player.VlcjControl
-import io.github.mslxl.xmusic.desktop.src.SourceLocalMusic
 import io.github.mslxl.xmusic.desktop.ui.*
 import java.awt.CardLayout
 import javax.swing.JDialog
@@ -26,7 +26,7 @@ object App {
     private val logger = App::class.logger
 
     val core: XMusic = XMusic(LocalFile(), VlcjControl, CacheIndexDBImpl()).apply {
-        addMusicSource(SourceLocalMusic())
+        addMusicSource(SourceLocalMusic(this))
     }
 
     lateinit var cardLayout: CardLayout
