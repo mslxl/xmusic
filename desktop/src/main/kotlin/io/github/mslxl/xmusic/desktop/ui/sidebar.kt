@@ -29,7 +29,7 @@ fun sideBar(onDiscoveryAction: () -> Unit, onMineAction: () -> Unit, onSettingAc
             self.addSeparator()
             button("") {
                 attr {
-                    icon = vertCompoundIcon("\uf004", "My Fav", this)
+                    icon = vertCompoundIcon("\uf004", "Collection", this)
                 }
                 onAction {
                     onMineAction.invoke()

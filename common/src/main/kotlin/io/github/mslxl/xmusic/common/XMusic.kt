@@ -1,6 +1,7 @@
 package io.github.mslxl.xmusic.common
 
 import io.github.mslxl.xmusic.common.config.SourceConfig
+import io.github.mslxl.xmusic.common.config.XMusicConfig
 import io.github.mslxl.xmusic.common.fs.CacheIndexDBManager
 import io.github.mslxl.xmusic.common.fs.FileSystem
 import io.github.mslxl.xmusic.common.net.NetworkHandle
@@ -19,6 +20,7 @@ class XMusic(
 ) {
     val playlist = VirtualPlaylist()
     val network = NetworkHandle(this)
+    val programConfig = XMusicConfig(fs)
 
     init {
         this::class.logger.info("XMusic core($version) init")

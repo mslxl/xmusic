@@ -14,7 +14,12 @@ import io.github.mslxl.xmusic.common.src.SourceLocalMusic
 import io.github.mslxl.xmusic.desktop.fs.CacheIndexDBImpl
 import io.github.mslxl.xmusic.desktop.fs.LocalFile
 import io.github.mslxl.xmusic.desktop.player.VlcjControl
-import io.github.mslxl.xmusic.desktop.ui.*
+import io.github.mslxl.xmusic.desktop.ui.initGlobalFont
+import io.github.mslxl.xmusic.desktop.ui.playBar
+import io.github.mslxl.xmusic.desktop.ui.sideBar
+import io.github.mslxl.xmusic.desktop.ui.view.discovery.discoveryPane
+import io.github.mslxl.xmusic.desktop.ui.view.mine.myFavPane
+import io.github.mslxl.xmusic.desktop.ui.view.settings.settingsPane
 import java.awt.CardLayout
 import javax.swing.JDialog
 import javax.swing.JFrame
@@ -42,6 +47,7 @@ object App {
     @JvmStatic
     fun main(args: Array<String>) {
         try {
+            initGlobalFont()
             UIManager.setLookAndFeel(DarculaLaf())
             JFrame.setDefaultLookAndFeelDecorated(true)
             JDialog.setDefaultLookAndFeelDecorated(true)
