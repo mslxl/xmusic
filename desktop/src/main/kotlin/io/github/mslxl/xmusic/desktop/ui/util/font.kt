@@ -1,4 +1,4 @@
-package io.github.mslxl.xmusic.desktop.ui
+package io.github.mslxl.xmusic.desktop.ui.util
 
 import com.wordpress.tips4java.robcamick.TextIcon
 import io.github.mslxl.ktswing.BasicScope

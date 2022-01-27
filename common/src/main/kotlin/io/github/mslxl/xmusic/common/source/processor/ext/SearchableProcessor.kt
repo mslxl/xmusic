@@ -14,6 +14,6 @@ interface SearchableProcessor<T : Explorable> {
 }
 
 
-fun MusicSource.isAlbumSearchable() = this.album != null && this.album is SearchableProcessor<*>
-fun MusicSource.isSongSearchable() = this.information is SearchableProcessor<*>
-fun MusicSource.isCollectionSearchable() = this.collection != null && this.collection is SearchableProcessor<*>
+val MusicSource.isAlbumSearchable get() = this.album != null && this.album is SearchableProcessor<*>
+val MusicSource.isSongSearchable get() = this.information is SearchableProcessor<*>
+val MusicSource.isCollectionSearchable get() = this.collection != null && this.collection is SearchableProcessor<*>

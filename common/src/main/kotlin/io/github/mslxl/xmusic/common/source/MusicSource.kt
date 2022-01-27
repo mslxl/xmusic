@@ -7,6 +7,9 @@ import io.github.mslxl.xmusic.common.source.processor.AlbumProcessor
 import io.github.mslxl.xmusic.common.source.processor.CollectionProcessor
 import io.github.mslxl.xmusic.common.source.processor.ExplorerProcessor
 import io.github.mslxl.xmusic.common.source.processor.SongProcessor
+import io.github.mslxl.xmusic.common.source.processor.ext.isAlbumSearchable
+import io.github.mslxl.xmusic.common.source.processor.ext.isCollectionSearchable
+import io.github.mslxl.xmusic.common.source.processor.ext.isSongSearchable
 
 /**
  * Provide information of song from different source
@@ -39,3 +42,11 @@ interface MusicSource {
     fun acceptConfig(config: SourceConfig)
 
 }
+
+val MusicSource.hasDiscoveryPage: Boolean
+    get() = !discovery.isNullOrEmpty() || isSearchable
+
+
+val MusicSource.isSearchable: Boolean
+    get() = isCollectionSearchable || isSongSearchable || isAlbumSearchable
+

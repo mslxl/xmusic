@@ -7,7 +7,7 @@
         </encoder>
     </appender>
 
-    <appender name="SWING" class="io.github.mslxl.xmusic.desktop.JTextLoggerAppender"/>
+    <appender name="SWING" class="io.github.mslxl.xmusic.desktop.logger.JTextLoggerAppender"/>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder>

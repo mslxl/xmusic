@@ -2,11 +2,8 @@ package io.github.mslxl.xmusic.desktop
 
 import com.bulenkov.darcula.DarculaLaf
 import io.github.mslxl.ktswing.attr
-import io.github.mslxl.ktswing.component.panel
 import io.github.mslxl.ktswing.exitOnClose
 import io.github.mslxl.ktswing.frame
-import io.github.mslxl.ktswing.layout.borderLayout
-import io.github.mslxl.ktswing.layout.cardLayout
 import io.github.mslxl.ktswing.resizable
 import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.logger
@@ -14,16 +11,10 @@ import io.github.mslxl.xmusic.common.src.SourceLocalMusic
 import io.github.mslxl.xmusic.desktop.fs.CacheIndexDBImpl
 import io.github.mslxl.xmusic.desktop.fs.LocalFile
 import io.github.mslxl.xmusic.desktop.player.VlcjControl
-import io.github.mslxl.xmusic.desktop.ui.initGlobalFont
-import io.github.mslxl.xmusic.desktop.ui.playBar
-import io.github.mslxl.xmusic.desktop.ui.sideBar
-import io.github.mslxl.xmusic.desktop.ui.view.discovery.discoveryPane
-import io.github.mslxl.xmusic.desktop.ui.view.mine.myFavPane
-import io.github.mslxl.xmusic.desktop.ui.view.settings.settingsPane
-import java.awt.CardLayout
+import io.github.mslxl.xmusic.desktop.ui.util.initGlobalFont
+import io.github.mslxl.xmusic.desktop.ui.view.root.RootView
 import javax.swing.JDialog
 import javax.swing.JFrame
-import javax.swing.JPanel
 import javax.swing.UIManager
 
 object App {
@@ -34,18 +25,9 @@ object App {
         addMusicSource(SourceLocalMusic(this))
     }
 
-    lateinit var cardLayout: CardLayout
-    lateinit var centerPane: JPanel
-    var currentShowCard = ""
-    private fun showCard(cardName: String) {
-        logger.info("show card $cardName")
-        cardLayout.show(centerPane, cardName)
-        centerPane.updateUI()
-        currentShowCard = cardName
-    }
-
     @JvmStatic
     fun main(args: Array<String>) {
+        logger.info("XMusic desktop($version) start")
         try {
             initGlobalFont()
             UIManager.setLookAndFeel(DarculaLaf())
@@ -55,8 +37,7 @@ object App {
             logger.warn("Fail to use darcula LAF", e)
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
         }
-        logger.info("XMusic desktop($version) start")
-
+        val rootView = RootView()
 
         frame {
             attr {
@@ -65,37 +46,7 @@ object App {
                 resizable
                 setLocationRelativeTo(null)
             }
-            borderLayout {
-                left {
-                    add(
-                            sideBar(
-                                    onDiscoveryAction = { showCard("Discovery") },
-                                    onMineAction = { showCard("My") },
-                                    onSettingAction = { showCard("Setting") }
-                            ))
-                }
-                center {
-                    panel {
-                        centerPane = self
-
-                        cardLayout = cardLayout {
-                            card("Setting") {
-                                add(settingsPane())
-                            }
-                            card("My") {
-                                add(myFavPane())
-                            }
-                            card("Discovery") {
-                                add(discoveryPane())
-                            }
-                            show("Discovery")
-                        }
-                    }
-                }
-                bottom {
-                    add(playBar())
-                }
-            }
+            self.contentPane = rootView.root
         }.exitOnClose
 
     }

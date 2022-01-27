@@ -2,49 +2,27 @@ package io.github.mslxl.xmusic.desktop.ui.view.discovery
 
 import io.github.mslxl.ktswing.attr
 import io.github.mslxl.ktswing.component.*
-import io.github.mslxl.ktswing.component.adv.lazyPanelWith
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayout
 import io.github.mslxl.ktswing.layout.borderLayoutCenter
 import io.github.mslxl.xmusic.common.source.MusicSource
+import io.github.mslxl.xmusic.common.source.isSearchable
 import io.github.mslxl.xmusic.common.source.processor.ext.isAlbumSearchable
 import io.github.mslxl.xmusic.common.source.processor.ext.isCollectionSearchable
 import io.github.mslxl.xmusic.common.source.processor.ext.isSongSearchable
-import io.github.mslxl.xmusic.desktop.App
+import io.github.mslxl.xmusic.desktop.ui.view.View
 import java.awt.Color
 import javax.swing.BorderFactory
-import javax.swing.JComponent
-import javax.swing.JTabbedPane
+import javax.swing.JPanel
 
-fun discoveryPane(): JTabbedPane {
-    val srcSupported = App.core.sourceList.map {
-        App.core.getSrc(it)
-    }.filter {
-        hasDiscoveryPage(it)
-    }
-    return swing {
-        tabbedPane {
-            srcSupported.forEach {
-                tab(it.name) {
-                    lazyPanelWith(borderLayoutCenter()) {
-                        scrollPane {
-                            add(buildSourcePage(it))
-                        }
-                    }
-                }
-            }
-
-        }
-    }
-}
-
-fun buildSourcePage(src: MusicSource): JComponent {
-    return swing {
+class DiscoveryTabView(val src: MusicSource) : View {
+    private val controller = DiscoveryTabController(this)
+    override val root = swing<JPanel> {
         vBox {
             attr {
                 border = BorderFactory.createEmptyBorder(10, 15, 5, 15)
             }
-            if (isSearchable(src)) {
+            if (src.isSearchable) {
                 panel {
                     attr {
                         maximumSize = maximumSize.apply {
@@ -62,9 +40,9 @@ fun buildSourcePage(src: MusicSource): JComponent {
                         right {
                             hBox {
                                 comboBox<String> {
-                                    if (src.isSongSearchable()) self.addItem("Song")
-                                    if (src.isAlbumSearchable()) self.addItem("Album")
-                                    if (src.isCollectionSearchable()) self.addItem("Collection")
+                                    if (src.isSongSearchable) self.addItem("Song")
+                                    if (src.isAlbumSearchable) self.addItem("Album")
+                                    if (src.isCollectionSearchable) self.addItem("Collection")
                                 }
                                 button("Search")
                             }
@@ -89,11 +67,3 @@ fun buildSourcePage(src: MusicSource): JComponent {
         }
     }
 }
-
-fun hasDiscoveryPage(src: MusicSource): Boolean =
-    !src.discovery.isNullOrEmpty() || isSearchable(src)
-
-
-fun isSearchable(src: MusicSource): Boolean =
-    src.isCollectionSearchable() || src.isSongSearchable() || src.isAlbumSearchable()
-

@@ -1,4 +1,4 @@
-package io.github.mslxl.xmusic.desktop
+package io.github.mslxl.xmusic.desktop.logger
 
 import ch.qos.logback.core.UnsynchronizedAppenderBase
 
@@ -15,11 +15,11 @@ class JTextLoggerAppender<E> : UnsynchronizedAppenderBase<E>() {
         }
 
         fun registerNotifier(listener: (String) -> Unit) {
-            this.listener.add(listener)
+            Companion.listener.add(listener)
         }
 
         fun unregisterNotifier(listener: (String) -> Unit) {
-            this.listener.remove(listener)
+            Companion.listener.remove(listener)
         }
     }
 
