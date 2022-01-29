@@ -1,10 +1,18 @@
 package io.github.mslxl.xmusic.common.source.processor
 
-/**
- * The class which impl [Explorable] means it can display on Explore
- */
-interface Explorable
+import java.net.URL
 
-interface ExplorerProcessor<T : Explorable> {
-    suspend fun refresh(): Sequence<T>
+/**
+ * The class which impl [ExplorableIndex] means it can display on Explore
+ */
+interface ExplorableIndex<Entity : ExplorableEntity>
+
+interface ExplorableEntity {
+    val title: String
+    val cover: URL?
+}
+
+interface ExplorerProcessor<T : ExplorableIndex<E>, E : ExplorableEntity> {
+    suspend fun getExploredList(): Sequence<T>
+    suspend fun getExploredDetail(index: T): Sequence<E>
 }

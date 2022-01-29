@@ -30,7 +30,7 @@ interface MusicSource {
 
     val information: SongProcessor
 
-    val discovery: Map<I18nKey, ExplorerProcessor<*>>?
+    val discovery: Map<I18nKey, ExplorerProcessor<*, *>>?
         get() = null
 
     val album: AlbumProcessor?

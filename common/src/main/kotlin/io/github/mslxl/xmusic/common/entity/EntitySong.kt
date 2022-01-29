@@ -1,5 +1,6 @@
 package io.github.mslxl.xmusic.common.entity
 
+import io.github.mslxl.xmusic.common.source.processor.ExplorableEntity
 import java.net.URL
 
 /**
@@ -8,7 +9,7 @@ import java.net.URL
 data class EntitySong(
     val index: EntitySongIndex,
     val id: String,
-    val title: String,
+    override val title: String,
     val singer: String,
-    val coverUrl: URL,
-)
+    override val cover: URL? = null,
+) : ExplorableEntity
