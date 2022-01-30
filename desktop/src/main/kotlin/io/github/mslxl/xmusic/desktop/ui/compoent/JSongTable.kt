@@ -9,10 +9,10 @@ import io.github.mslxl.xmusic.common.entity.EntitySongIndex
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.player.VirtualPlaylist
 import io.github.mslxl.xmusic.common.source.MusicSource
+import io.github.mslxl.xmusic.desktop.ui.util.scale
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import java.awt.Dimension
-import java.awt.Image
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
@@ -142,9 +142,8 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
                         attr {
                             val size = tableComponent.rowHeight
                             preferredSize = Dimension(size, size)
-                            self.icon = ImageIcon(value.coverUrl).apply {
-                                image = image.getScaledInstance(size, size, Image.SCALE_DEFAULT)
-                            }
+                            self.icon =
+                                ImageIcon(value.cover).scale(size, size)
                         }
                     }
                 }

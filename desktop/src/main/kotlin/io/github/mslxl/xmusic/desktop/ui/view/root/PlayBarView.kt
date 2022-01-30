@@ -131,10 +131,11 @@ class PlayBarView : View {
                 border = BorderFactory.createEtchedBorder()
             }
             self.icon = ImageIcon(MusicUtils.defaultCover.toURI().toURL()).scalaImageIcon(64)
-            VlcjControl.addPlayInfoListener { info, cacheFile ->
+            VlcjControl.addPlayInfoListener { info, _ ->
                 // Download image and show it
-                val coverFile =
-                    App.core.network.download(App.core.getSrc(info.index.source), info.coverUrl, true)
+                val coverFile = info.cover?.let { url ->
+                    App.core.network.download(App.core.getSrc(info.index.source), url, true)
+                } ?: MusicUtils.defaultCover
                 self.icon = ImageIcon(coverFile.inputStream().readBytes()).scalaImageIcon(64)
             }
         }
