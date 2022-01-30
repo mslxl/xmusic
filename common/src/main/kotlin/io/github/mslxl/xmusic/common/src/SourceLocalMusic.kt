@@ -52,7 +52,7 @@ class SourceLocalMusic(override var core: XMusic) : MusicSource {
                                 id = entitySongPreview.id,
                                 title = title,
                                 singer = singer,
-                                coverUrl = cover
+                                cover = cover
                             )
                         )
                     )
@@ -64,7 +64,7 @@ class SourceLocalMusic(override var core: XMusic) : MusicSource {
                                 id = entitySongPreview.id,
                                 title = name,
                                 singer = "Unknown",
-                                coverUrl = cover
+                                cover = cover
                             )
                         )
                     )

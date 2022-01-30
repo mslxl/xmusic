@@ -19,6 +19,13 @@ class XMusicConfig(val fs: FileSystem) {
             config.set("font", value)
         }
 
+    private val defaultFontSize = 12
+    var fontSize: Int
+        get() = config.get("font_size", defaultFontSize.toString()).toIntOrNull() ?: defaultFontSize
+        set(value) {
+            config.set("font_size", value.toString())
+        }
+
     fun save() {
         config.save()
     }

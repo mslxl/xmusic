@@ -1,7 +1,7 @@
 package io.github.mslxl.xmusic.common.entity
 
 import io.github.mslxl.xmusic.common.source.SourceID
-import io.github.mslxl.xmusic.common.source.processor.Explorable
+import io.github.mslxl.xmusic.common.source.processor.ExplorableIndex
 import java.util.*
 
 /**
@@ -10,7 +10,7 @@ import java.util.*
 data class EntityCollectionIndex(
     val id: String,
     val source: SourceID
-) : Explorable {
+) : ExplorableIndex<EntityCollection> {
     val uuid by lazy {
         UUID.nameUUIDFromBytes("song$id$source".toByteArray())
     }

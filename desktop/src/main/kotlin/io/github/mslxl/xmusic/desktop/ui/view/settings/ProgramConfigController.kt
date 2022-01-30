@@ -11,6 +11,12 @@ class ProgramConfigController(private val view: ProgramConfigView) {
                 font = view.comboBoxFont.selectedItem?.toString() ?: defaultFont.first
                 needRestart = true
             }
+            val configFontSize = view.spinnerFontSize.value.toString().toInt()
+            if (fontSize != configFontSize) {
+                fontSize = configFontSize
+                needRestart = true
+            }
+
             save()
             if (needRestart) {
                 JOptionPane.showMessageDialog(view.root, "Some settings need restart to take effect")

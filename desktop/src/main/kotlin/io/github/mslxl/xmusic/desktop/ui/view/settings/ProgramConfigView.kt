@@ -8,19 +8,19 @@ import io.github.mslxl.ktswing.layout.borderLayout
 import io.github.mslxl.ktswing.layout.borderLayoutCenter
 import io.github.mslxl.xmusic.desktop.App
 import io.github.mslxl.xmusic.desktop.ui.view.View
-import javax.swing.BorderFactory
-import javax.swing.JComboBox
-import javax.swing.JComponent
+import javax.swing.*
 
 class ProgramConfigView : View {
     private val controller = ProgramConfigController(this)
     lateinit var comboBoxFont: JComboBox<String>
+    lateinit var spinnerFontSize: JSpinner
     override val root: JComponent = swing {
         lazyPanelWith(borderLayoutCenter()) {
             scrollPane {
                 vBox {
                     self.border = BorderFactory.createEmptyBorder(20, 20, 20, 20)
                     fontFamily()
+                    fontSize()
                     hBox {
                         glue
                         button("Apply").addActionListener {
@@ -31,6 +31,27 @@ class ProgramConfigView : View {
                 }
             }
         }
+    }
+
+    private fun CanAddChildrenScope<*>.fontSize() {
+        panel {
+            self.setCommonHeight()
+            borderLayout {
+                left {
+                    label("Font size:")
+                }
+                center {
+                    spinnerFontSize = spinner(
+                        SpinnerNumberModel(
+                            App.core.programConfig.fontSize,
+                            1, 100,
+                            1
+                        )
+                    )
+                }
+            }
+        }
+
     }
 
     private fun CanAddChildrenScope<*>.fontFamily() {

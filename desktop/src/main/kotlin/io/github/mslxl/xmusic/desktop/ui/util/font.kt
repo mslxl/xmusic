@@ -56,12 +56,12 @@ fun initGlobalFont() {
     System.setProperty("awt.useSystemAAFontSettings", "on")
     System.setProperty("swing.aatext", "true");
     val font = if (App.core.programConfig.font != App.core.programConfig.defaultFont.first) {
-        Font(App.core.programConfig.font, Font.PLAIN, 14)
+        Font(App.core.programConfig.font, Font.PLAIN, App.core.programConfig.fontSize)
     } else {
         Font.createFont(
             Font.TRUETYPE_FONT,
             XMusic::class.java.getResourceAsStream(App.core.programConfig.defaultFont.second)
-        ).deriveFont(14.0f)
+        ).deriveFont(App.core.programConfig.fontSize.toFloat())
     }
     val res = FontUIResource(font)
     logger("Util").info("Init global font as ${font.fontName}")
