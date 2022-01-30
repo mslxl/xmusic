@@ -14,6 +14,6 @@ data class EntityAlbumIndex(
     val sourceID: SourceID
 ) : Explorable {
     val uuid by lazy {
-        UUID.fromString("album$id$sourceID")
+        UUID.nameUUIDFromBytes("album$id$sourceID".toByteArray())
     }
 }
