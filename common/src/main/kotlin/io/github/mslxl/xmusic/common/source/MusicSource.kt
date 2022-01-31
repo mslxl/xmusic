@@ -2,7 +2,8 @@ package io.github.mslxl.xmusic.common.source
 
 import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.config.SourceConfig
-import io.github.mslxl.xmusic.common.i18n.I18nKey
+import io.github.mslxl.xmusic.common.i18n.I18NKey
+import io.github.mslxl.xmusic.common.i18n.I18NLocalCode
 import io.github.mslxl.xmusic.common.source.processor.AlbumProcessor
 import io.github.mslxl.xmusic.common.source.processor.CollectionProcessor
 import io.github.mslxl.xmusic.common.source.processor.ExplorerProcessor
@@ -30,7 +31,7 @@ interface MusicSource {
 
     val information: SongProcessor
 
-    val discovery: Map<I18nKey, ExplorerProcessor<*, *>>?
+    val discovery: Map<I18NKey, ExplorerProcessor<*, *>>?
         get() = null
 
     val album: AlbumProcessor?
@@ -39,7 +40,10 @@ interface MusicSource {
     val collection: CollectionProcessor?
         get() = null
 
-    fun acceptConfig(config: SourceConfig)
+    val i18n: Map<I18NLocalCode, () -> List<Pair<I18NKey, String>>>
+        get() = emptyMap()
+
+    fun configure(config: SourceConfig)
 
 }
 

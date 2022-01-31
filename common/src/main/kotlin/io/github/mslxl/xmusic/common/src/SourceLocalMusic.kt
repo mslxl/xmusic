@@ -128,7 +128,7 @@ class SourceLocalMusic(override var core: XMusic) : MusicSource {
         }
     }
 
-    override fun acceptConfig(config: SourceConfig) {
+    override fun configure(config: SourceConfig) {
         config.markType("path", "Music Folder", SourceConfig.ItemType.TEXT)
         this.config = config
     }
