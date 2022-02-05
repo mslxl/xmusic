@@ -16,6 +16,10 @@ class ProgramConfigController(private val view: ProgramConfigView) {
                 fontSize = configFontSize
                 needRestart = true
             }
+            if (lang != view.textFieldLang.text) {
+                lang = view.textFieldLang.text
+                needRestart = true
+            }
 
             save()
             if (needRestart) {

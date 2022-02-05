@@ -6,7 +6,7 @@ import io.github.mslxl.ktswing.component.panel
 import io.github.mslxl.ktswing.component.scrollPane
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayoutCenter
-import io.github.mslxl.xmusic.common.i18n.I18nKey
+import io.github.mslxl.xmusic.common.i18n.I18NKey
 import io.github.mslxl.xmusic.common.source.MusicSource
 import io.github.mslxl.xmusic.common.source.processor.ExplorableEntity
 import io.github.mslxl.xmusic.common.source.processor.ExplorableIndex
@@ -16,11 +16,13 @@ import io.github.mslxl.xmusic.desktop.App
 import io.github.mslxl.xmusic.desktop.ui.util.scale
 import io.github.mslxl.xmusic.desktop.ui.view.View
 import java.awt.Component
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import javax.swing.*
 
 
 class DiscoveryColumView<T : ExplorableIndex<E>, E : ExplorableEntity>(
-    val i18nKey: I18nKey,
+    val i18nKey: I18NKey,
     val processor: ExplorerProcessor<T, E>,
     val musicSource: MusicSource
 ) :
@@ -70,6 +72,11 @@ class DiscoveryColumView<T : ExplorableIndex<E>, E : ExplorableEntity>(
                             selectionMode = ListSelectionModel.SINGLE_SELECTION
                             cellRenderer = renderer
                         }
+                        self.addMouseListener(object : MouseAdapter() {
+                            override fun mouseClicked(e: MouseEvent?) {
+                                controller.openDetail(self.selectedValue)
+                            }
+                        })
                     }
                 }
             }

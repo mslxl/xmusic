@@ -6,7 +6,7 @@ import java.io.File
 
 object MusicUtils {
     private val logger = this::class.logger
-    val defaultCover by lazy {
+    val defaultCover: File by lazy {
         File.createTempFile("default_cover.tmp", "png").apply {
             logger.info("Extract default cover to $absolutePath")
             outputStream().use { output ->

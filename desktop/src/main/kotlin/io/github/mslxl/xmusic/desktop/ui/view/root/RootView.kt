@@ -5,7 +5,9 @@ import io.github.mslxl.ktswing.component.panelWith
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayout
 import io.github.mslxl.ktswing.layout.cardLayout
+import io.github.mslxl.xmusic.common.i18n.i18n
 import io.github.mslxl.xmusic.common.logger
+import io.github.mslxl.xmusic.desktop.App
 import io.github.mslxl.xmusic.desktop.ui.view.View
 import io.github.mslxl.xmusic.desktop.ui.view.addView
 import io.github.mslxl.xmusic.desktop.ui.view.collection.CollectionView
@@ -35,13 +37,13 @@ class RootView : View {
     }
 
     private val viewSideBar = SideBarView().apply {
-        addAction("\uf002", "Discovery") {
+        addAction("\uf002", "sidebar.discovery".i18n(App.core, App.id)) {
             showCard(CARD_NAME_DISCOVERY)
         }
-        addAction("\uf004", "Collection") {
+        addAction("\uf004", "sidebar.my".i18n(App.core, App.id)) {
             showCard(CARD_NAME_COLLECTION)
         }
-        addAction("\uf4fe", "Setting") {
+        addAction("\uf4fe", "sidebar.setting".i18n(App.core, App.id)) {
             showCard(CARD_NAME_SETTINGS)
         }
     }

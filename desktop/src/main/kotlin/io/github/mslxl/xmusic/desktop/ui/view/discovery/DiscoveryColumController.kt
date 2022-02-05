@@ -57,4 +57,9 @@ class DiscoveryColumController<T : ExplorableIndex<E>, E : ExplorableEntity>(pri
             fire()
         }
     }
+
+    fun openDetail(song: ExplorableEntity) {
+        logger.info("open detail $song from discovery")
+
+    }
 }

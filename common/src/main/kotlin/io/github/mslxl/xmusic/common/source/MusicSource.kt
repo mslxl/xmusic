@@ -2,8 +2,8 @@ package io.github.mslxl.xmusic.common.source
 
 import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.config.SourceConfig
+import io.github.mslxl.xmusic.common.i18n.I18N
 import io.github.mslxl.xmusic.common.i18n.I18NKey
-import io.github.mslxl.xmusic.common.i18n.I18NLocalCode
 import io.github.mslxl.xmusic.common.source.processor.AlbumProcessor
 import io.github.mslxl.xmusic.common.source.processor.CollectionProcessor
 import io.github.mslxl.xmusic.common.source.processor.ExplorerProcessor
@@ -20,9 +20,9 @@ import io.github.mslxl.xmusic.common.source.processor.ext.isSongSearchable
  */
 typealias SourceID = String
 
-interface MusicSource {
-    val name: String
-    val id: SourceID
+interface MusicSource : I18N {
+    val name: I18NKey
+    override val id: SourceID
         get() = name.hashCode().toString()
     var core: XMusic
 
@@ -40,8 +40,6 @@ interface MusicSource {
     val collection: CollectionProcessor?
         get() = null
 
-    val i18n: Map<I18NLocalCode, () -> List<Pair<I18NKey, String>>>
-        get() = emptyMap()
 
     fun configure(config: SourceConfig)
 

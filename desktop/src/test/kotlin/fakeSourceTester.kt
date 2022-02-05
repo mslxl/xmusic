@@ -2,7 +2,8 @@ import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.config.SourceConfig
 import io.github.mslxl.xmusic.common.entity.EntitySong
 import io.github.mslxl.xmusic.common.entity.EntitySongIndex
-import io.github.mslxl.xmusic.common.i18n.I18nKey
+import io.github.mslxl.xmusic.common.i18n.I18NKey
+import io.github.mslxl.xmusic.common.i18n.I18NLocalCode
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.source.MusicSource
 import io.github.mslxl.xmusic.common.source.processor.ExplorerProcessor
@@ -14,13 +15,27 @@ import kotlin.random.Random
 
 class FakeMusicSource(override var core: XMusic) : MusicSource {
     override val name = "fake music source"
+    override val id = "io.github.mslxl.xmusic.test.fakesource"
     override val information = FakeSongProcessor(this)
-    override val discovery: Map<I18nKey, ExplorerProcessor<*, *>> =
+    override val i18n: Map<I18NLocalCode, () -> List<Pair<I18NKey, String>>> = mapOf(
+        "zh" to {
+            listOf(
+                "fake music source" to "测试源 (JVM)"
+            )
+        },
+        "en" to {
+            listOf(
+                "fake music source" to "Test Source (JVM)"
+            )
+        }
+
+    )
+    override val discovery: Map<I18NKey, ExplorerProcessor<*, *>> =
         mapOf(
             "Test 1" to information
         )
 
-    override fun acceptConfig(config: SourceConfig) {
+    override fun configure(config: SourceConfig) {
         config.markType("field.1", "Field 01", SourceConfig.ItemType.TEXT)
         config.markType("field.2", "Field 02", SourceConfig.ItemType.PASSWORD)
     }

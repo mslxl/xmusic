@@ -12,15 +12,23 @@ import javax.swing.*
 
 class ProgramConfigView : View {
     private val controller = ProgramConfigController(this)
-    lateinit var comboBoxFont: JComboBox<String>
-    lateinit var spinnerFontSize: JSpinner
+    val config get() = App.core.programConfig
+
+    val comboBoxFont: JComboBox<String>
+    val spinnerFontSize: JSpinner
+    val textFieldLang: JTextField
+
+
     override val root: JComponent = swing {
         lazyPanelWith(borderLayoutCenter()) {
             scrollPane {
                 vBox {
                     self.border = BorderFactory.createEmptyBorder(20, 20, 20, 20)
-                    fontFamily()
-                    fontSize()
+
+                    textFieldLang = lang()
+                    comboBoxFont = fontFamily()
+                    spinnerFontSize = fontSize()
+
                     hBox {
                         glue
                         button("Apply").addActionListener {
@@ -33,7 +41,25 @@ class ProgramConfigView : View {
         }
     }
 
-    private fun CanAddChildrenScope<*>.fontSize() {
+    private fun CanAddChildrenScope<*>.lang(): JTextField {
+        val textField: JTextField
+        panel {
+            self.setCommonHeight()
+            borderLayout {
+                left {
+                    label("Language:")
+                }
+                center {
+                    textField = textField(text = config.lang)
+                }
+            }
+        }
+        return textField
+
+    }
+
+    private fun CanAddChildrenScope<*>.fontSize(): JSpinner {
+        val spinner: JSpinner
         panel {
             self.setCommonHeight()
             borderLayout {
@@ -41,9 +67,9 @@ class ProgramConfigView : View {
                     label("Font size:")
                 }
                 center {
-                    spinnerFontSize = spinner(
+                    spinner = spinner(
                         SpinnerNumberModel(
-                            App.core.programConfig.fontSize,
+                            config.fontSize,
                             1, 100,
                             1
                         )
@@ -51,10 +77,12 @@ class ProgramConfigView : View {
                 }
             }
         }
+        return spinner
 
     }
 
-    private fun CanAddChildrenScope<*>.fontFamily() {
+    private fun CanAddChildrenScope<*>.fontFamily(): JComboBox<String> {
+        val comboBox: JComboBox<String>
         panel {
             self.setCommonHeight()
             borderLayout(10) {
@@ -62,8 +90,8 @@ class ProgramConfigView : View {
                     label("Font")
                 }
                 center {
-                    comboBoxFont = comboBox(App.core.programConfig.availableFont) {
-                        val curFont = App.core.programConfig.font
+                    comboBox = comboBox(config.availableFont) {
+                        val curFont = config.font
                         for (i in 0..self.model.size) {
                             if (self.model.getElementAt(i) == curFont) {
                                 self.selectedIndex = i
@@ -74,6 +102,7 @@ class ProgramConfigView : View {
                 }
             }
         }
+        return comboBox
     }
 
     private fun JComponent.setCommonHeight(multi: Int = 1) {

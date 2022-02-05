@@ -6,8 +6,12 @@ import io.github.mslxl.xmusic.common.entity.EntityCollection
 import io.github.mslxl.xmusic.common.entity.EntityCollectionIndex
 import io.github.mslxl.xmusic.common.entity.EntitySong
 import io.github.mslxl.xmusic.common.entity.EntitySongIndex
+import io.github.mslxl.xmusic.common.i18n.I18NKey
+import io.github.mslxl.xmusic.common.i18n.I18NLocalCode
+import io.github.mslxl.xmusic.common.i18n.i18n
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.source.MusicSource
+import io.github.mslxl.xmusic.common.source.SourceID
 import io.github.mslxl.xmusic.common.source.processor.CollectionProcessor
 import io.github.mslxl.xmusic.common.source.processor.SongProcessor
 import io.github.mslxl.xmusic.common.util.MusicUtils
@@ -28,9 +32,22 @@ class SourceLocalMusic(override var core: XMusic) : MusicSource {
 
     lateinit var config: SourceConfig
 
-    override val name: String
-        get() = "LocalMusic"
+    override val name: String = "localmusic.name"
+    override val id: SourceID = "io.github.mslxl.xmusic.common.localmusic"
 
+    override val i18n: Map<I18NLocalCode, () -> List<Pair<I18NKey, String>>> = mapOf(
+        "zh_CN" to {
+            listOf(
+                "localmusic.name" to "本地音乐",
+                "localmusic.item.uncatalogued" to "未分类"
+            )
+        },
+        "en" to {
+            listOf(
+                "localmusic.name" to "Local Music",
+                "localmusic.item.uncatalogued" to "Uncatalogued"
+            )
+        })
 
     override val information = object : SongProcessor {
         override suspend fun getDetail(entitySongPreview: EntitySongIndex): Sequence<EntitySong> {
@@ -115,7 +132,7 @@ class SourceLocalMusic(override var core: XMusic) : MusicSource {
         override suspend fun getDetail(entity: EntityCollectionIndex): EntityCollection {
             return EntityCollection(
                 index = entity,
-                name = entity.id.ifBlank { "Uncatalogued" },
+                name = entity.id.ifBlank { "localmusic.item.uncatalogued".i18n(core, this@SourceLocalMusic.id) },
                 desc = "Local music in folder ${entity.id}",
                 creator = "Filesystem"
             )
