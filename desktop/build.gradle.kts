@@ -29,7 +29,7 @@ dependencies {
 
     implementation("uk.co.caprica:vlcj:4.7.1")
 
-    implementation(fileTree("libs"))
+    implementation("com.formdev:flatlaf:2.0.1")
 
     implementation("ch.qos.logback:logback-core:1.3.0-alpha12")
     implementation("ch.qos.logback:logback-classic:1.3.0-alpha12")

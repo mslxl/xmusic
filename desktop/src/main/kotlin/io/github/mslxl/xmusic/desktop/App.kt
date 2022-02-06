@@ -1,6 +1,7 @@
 package io.github.mslxl.xmusic.desktop
 
-import com.bulenkov.darcula.DarculaLaf
+import com.formdev.flatlaf.FlatDarculaLaf
+import com.formdev.flatlaf.FlatLightLaf
 import io.github.mslxl.ktswing.attr
 import io.github.mslxl.ktswing.exitOnClose
 import io.github.mslxl.ktswing.frame
@@ -56,9 +57,9 @@ object App : I18N {
         logger.info("XMusic desktop($version) start")
         try {
             initGlobalFont()
-            UIManager.setLookAndFeel(DarculaLaf())
             JFrame.setDefaultLookAndFeelDecorated(true)
             JDialog.setDefaultLookAndFeelDecorated(true)
+            FlatDarculaLaf.setup()
         } catch (e: ExceptionInInitializerError) {
             logger.warn("Fail to use darcula LAF", e)
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
