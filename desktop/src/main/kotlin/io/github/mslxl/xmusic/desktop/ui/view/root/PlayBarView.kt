@@ -26,7 +26,7 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 
-class PlayBarView : View {
+class PlayBarView(override val parent: View?) : View {
     companion object {
         private val logger = PlayBarView::class.logger
     }

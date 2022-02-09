@@ -10,10 +10,10 @@ import io.github.mslxl.xmusic.desktop.ui.view.View
 import io.github.mslxl.xmusic.desktop.ui.view.addView
 import javax.swing.JTabbedPane
 
-class SettingView : View {
+class SettingView(override val parent: View?) : View {
     private val controller = SettingController(this)
-    private val viewAbout = AboutView()
-    private val viewProgramConfig = ProgramConfigView()
+    private val viewAbout = AboutView(this)
+    private val viewProgramConfig = ProgramConfigView(this)
     override val root = swing<JTabbedPane> {
         tabbedPane {
             tabPanelWith("title".i18n(App.core, App.id) /* XMusic in default */, borderLayoutCenter()) {
@@ -30,7 +30,7 @@ class SettingView : View {
         controller.src.forEach { sourceConfig ->
             val src = App.core.getSrc(sourceConfig.id)
             tabPanelWith(src.name.i18n(App.core, src.id), borderLayoutCenter()) {
-                addView(SourceConfigTabView(sourceConfig))
+                addView(SourceConfigTabView(sourceConfig, this@SettingView))
             }
         }
     }

@@ -1,7 +1,6 @@
 package io.github.mslxl.xmusic.desktop
 
 import com.formdev.flatlaf.FlatDarculaLaf
-import com.formdev.flatlaf.FlatLightLaf
 import io.github.mslxl.ktswing.attr
 import io.github.mslxl.ktswing.exitOnClose
 import io.github.mslxl.ktswing.frame
@@ -65,7 +64,6 @@ object App : I18N {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
         }
         core.i18n.insert(this)
-        val rootView = RootView()
 
         frame {
             attr {
@@ -74,6 +72,7 @@ object App : I18N {
                 resizable
                 setLocationRelativeTo(null)
             }
+            val rootView = RootView(self)
             self.contentPane = rootView.root
         }.exitOnClose
 

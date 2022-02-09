@@ -15,7 +15,7 @@ import javax.swing.Icon
 import javax.swing.JComponent
 import javax.swing.JToolBar
 
-class SideBarView : View {
+class SideBarView(override val parent: View?) : View {
     private val toolbar: JToolBar
     override val root: JComponent =
         swing {

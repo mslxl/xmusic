@@ -17,7 +17,7 @@ import java.awt.Color
 import javax.swing.BorderFactory
 import javax.swing.JComponent
 
-class DiscoveryTabView(val src: MusicSource) : View {
+class DiscoveryTabView(val src: MusicSource, override val parent: View?) : View {
     private val controller = DiscoveryTabController(this)
     override val root = swing<JComponent> {
         fvBox {
@@ -28,7 +28,7 @@ class DiscoveryTabView(val src: MusicSource) : View {
                 searchBar()
             }
             src.discovery?.forEach { (key, processor) ->
-                addView(DiscoveryColumView(key, processor, src))
+                addView(DiscoveryColumView(key, processor, src, this@DiscoveryTabView))
             }
         }
 

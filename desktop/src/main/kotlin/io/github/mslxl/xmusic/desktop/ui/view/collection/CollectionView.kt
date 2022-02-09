@@ -9,7 +9,7 @@ import io.github.mslxl.xmusic.desktop.ui.view.View
 import io.github.mslxl.xmusic.desktop.ui.view.addView
 import javax.swing.JTabbedPane
 
-class CollectionView : View {
+class CollectionView(override val parent: View) : View {
     private val controller = CollectionController(this)
     override val root = swing<JTabbedPane> {
         tabbedPane {
@@ -18,7 +18,7 @@ class CollectionView : View {
             }
             controller.sources.forEach { src ->
                 tabPanelWith(src.name.i18n(App.core, src.id), borderLayoutCenter()) {
-                    addView(CollectionTabView(src))
+                    addView(CollectionTabView(src, this@CollectionView))
                 }
             }
         }

@@ -12,7 +12,7 @@ import io.github.mslxl.xmusic.desktop.ui.view.View
 import javax.swing.JPanel
 import javax.swing.JTextArea
 
-class AboutView : View {
+class AboutView(override val parent: View?) : View {
     private val controller = AboutController(this)
     val licenseTextArea: JTextArea
     override val root = swing<JPanel> {

@@ -10,7 +10,7 @@ import io.github.mslxl.xmusic.desktop.App
 import io.github.mslxl.xmusic.desktop.ui.view.View
 import javax.swing.*
 
-class ProgramConfigView : View {
+class ProgramConfigView(override val parent: View?) : View {
     private val controller = ProgramConfigController(this)
     val config get() = App.core.programConfig
 

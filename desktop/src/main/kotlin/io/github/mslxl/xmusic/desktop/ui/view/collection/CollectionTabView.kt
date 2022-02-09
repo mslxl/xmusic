@@ -11,7 +11,7 @@ import io.github.mslxl.xmusic.desktop.ui.compoent.JSongTable
 import io.github.mslxl.xmusic.desktop.ui.view.View
 import javax.swing.JPanel
 
-class CollectionTabView(val src: MusicSource) : View {
+class CollectionTabView(val src: MusicSource, override val parent: View) : View {
     private val controller = CollectionTabController(this)
     val leftList = JCollectionList(src.collection!!).apply {
         addSelectionChangeListener { _, entityCollection ->

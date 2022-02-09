@@ -11,7 +11,7 @@ import io.github.mslxl.xmusic.desktop.ui.view.View
 import io.github.mslxl.xmusic.desktop.ui.view.addView
 import javax.swing.JTabbedPane
 
-class DiscoveryView : View {
+class DiscoveryView(override val parent: View?) : View {
     private val controller = DiscoveryController(this)
     override val root = swing<JTabbedPane> {
         tabbedPane {
@@ -19,7 +19,7 @@ class DiscoveryView : View {
                 tab(it.name.i18n(App.core, it.id)) {
                     lazyPanelWith(borderLayoutCenter()) {
                         scrollPane {
-                            addView(DiscoveryTabView(it))
+                            addView(DiscoveryTabView(it, this@DiscoveryView))
                         }
                     }
                 }

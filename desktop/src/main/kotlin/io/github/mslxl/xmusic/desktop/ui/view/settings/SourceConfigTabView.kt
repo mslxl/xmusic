@@ -14,7 +14,7 @@ import io.github.mslxl.xmusic.desktop.ui.view.View
 import javax.swing.BorderFactory
 import javax.swing.JComponent
 
-class SourceConfigTabView(val config: SourceConfig) : View {
+class SourceConfigTabView(val config: SourceConfig, override val parent: View?) : View {
     companion object {
         val logger = SourceConfigTabView::class.logger
     }

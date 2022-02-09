@@ -24,7 +24,8 @@ import javax.swing.*
 class DiscoveryColumView<T : ExplorableIndex<E>, E : ExplorableEntity>(
     val i18nKey: I18NKey,
     val processor: ExplorerProcessor<T, E>,
-    val musicSource: MusicSource
+    val musicSource: MusicSource,
+    override val parent: View
 ) :
     View {
     val scrollPane: JScrollPane
