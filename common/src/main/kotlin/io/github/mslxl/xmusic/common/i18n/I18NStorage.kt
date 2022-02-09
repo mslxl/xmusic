@@ -18,17 +18,18 @@ class I18NStorage(val core: XMusic) {
     fun insert(src: I18N) {
         val textPair = if (src.i18n.containsKey(local)) {
             logger.info("install i18n text $local from ${src.id}")
-            src.i18n[lang]!!.invoke()
+            src.i18n[local]!!.invoke()
         } else {
             src.i18n.keys.find { getLang(it) == lang }?.let {
                 logger.info("install i18n text $lang from ${src.id}")
                 src.i18n[it]!!.invoke()
+            }?: kotlin.run {
+                logger.warn("fallback to English language")
+                src.i18n["en"]!!.invoke()
             }
         }
-        if (textPair == null) {
-            logger.error("could find i18n text in source ${src.id}")
-            return
-        }
+
+
         data[src.id] = textPair.toMap()
     }
 
