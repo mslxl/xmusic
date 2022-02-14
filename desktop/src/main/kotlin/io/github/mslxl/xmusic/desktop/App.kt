@@ -13,6 +13,7 @@ import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.src.SourceLocalMusic
 import io.github.mslxl.xmusic.desktop.fs.CacheIndexDBImpl
 import io.github.mslxl.xmusic.desktop.fs.LocalFile
+import io.github.mslxl.xmusic.desktop.i18n.desktopI18nRes
 import io.github.mslxl.xmusic.desktop.player.VlcjControl
 import io.github.mslxl.xmusic.desktop.ui.util.initGlobalFont
 import io.github.mslxl.xmusic.desktop.ui.view.root.RootView
@@ -24,29 +25,7 @@ object App : I18N {
     const val version = "0.0.1-alpha"
     private val logger = App::class.logger
     override val id: String = XMusic.appID
-    override val i18n: Map<I18NLocalCode, () -> List<Pair<I18NKey, String>>> = mapOf(
-        "zh" to {
-            listOf(
-                "title" to "XMusic",
-                "sidebar.my" to "我的",
-                "sidebar.discovery" to "发现",
-                "sidebar.setting" to "设置",
-                "tab.about" to "关于",
-                "my.my" to "我的收藏"
-            )
-        },
-        "en" to {
-            listOf(
-                "title" to "XMusic",
-                "sidebar.mine" to "Mine",
-                "sidebar.discovery" to "Discovery",
-                "sidebar.setting" to "Settings",
-                "tab.about" to "About",
-                "my.my" to "My Fav"
-            )
-        }
-    )
-
+    override val i18n = desktopI18nRes
     val core: XMusic = XMusic(LocalFile(), VlcjControl, CacheIndexDBImpl()).apply {
         addMusicSource(SourceLocalMusic(this))
     }

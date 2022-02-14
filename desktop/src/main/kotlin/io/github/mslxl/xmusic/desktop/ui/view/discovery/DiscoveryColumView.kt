@@ -46,10 +46,9 @@ class DiscoveryColumView<T : ExplorableIndex<E>, E : ExplorableEntity>(
             val img = value?.cover?.let { url ->
                 App.core.network.download(musicSource, url, true)
             } ?: MusicUtils.defaultCover
-            label.icon = ImageIcon(img.toURI().toURL()).scale(64, 64)
+            label.icon = ImageIcon(img.toURI().toURL()).scale(128, 128)
             return label
         }
-
     }
 
 

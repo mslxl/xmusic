@@ -1,9 +1,13 @@
 package io.github.mslxl.xmusic.desktop.ui.view.discovery
 
+import io.github.mslxl.xmusic.common.entity.EntitySong
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.source.processor.ExplorableEntity
 import io.github.mslxl.xmusic.common.source.processor.ExplorableIndex
 import io.github.mslxl.xmusic.common.util.SequenceList
+import io.github.mslxl.xmusic.desktop.ui.view.findParent
+import io.github.mslxl.xmusic.desktop.ui.view.root.RootView
+import io.github.mslxl.xmusic.desktop.ui.view.songdetail.SongDetailView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -60,6 +64,11 @@ class DiscoveryColumController<T : ExplorableIndex<E>, E : ExplorableEntity>(pri
 
     fun openDetail(song: ExplorableEntity) {
         logger.info("open detail $song from discovery")
-
+        val root = view.findParent<RootView>()!!
+        val view = when (song) {
+            is EntitySong -> SongDetailView(root, song)
+            else -> error("Unrecognised explorable entity $song")
+        }
+        root.pushView(view)
     }
 }
