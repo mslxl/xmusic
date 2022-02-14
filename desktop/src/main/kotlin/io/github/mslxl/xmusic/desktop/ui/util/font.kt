@@ -32,7 +32,7 @@ object FontAwesome {
     }
 }
 
-@Suppress("NOTHING_TO_INLINE")
+@Suppress("NOTHING_TO_INLINE", "unused")
 inline fun <T : Component> BasicScope<T>.awesomeFontRegular() {
     self.font = FontAwesome.regularFont
 }
@@ -54,14 +54,14 @@ inline fun TextIcon.awesomeFontSolid() {
 
 fun initGlobalFont() {
     System.setProperty("awt.useSystemAAFontSettings", "on")
-    System.setProperty("swing.aatext", "true");
-    val font = if (App.core.programConfig.font != App.core.programConfig.defaultFont.first) {
-        Font(App.core.programConfig.font, Font.PLAIN, App.core.programConfig.fontSize)
+    System.setProperty("swing.aatext", "true")
+    val font = if (App.desktopConfig.font != App.desktopConfig.defaultFont.first) {
+        Font(App.desktopConfig.font, Font.PLAIN, App.desktopConfig.fontSize)
     } else {
         Font.createFont(
             Font.TRUETYPE_FONT,
-            XMusic::class.java.getResourceAsStream(App.core.programConfig.defaultFont.second)
-        ).deriveFont(App.core.programConfig.fontSize.toFloat())
+            XMusic::class.java.getResourceAsStream(App.desktopConfig.defaultFont.second)
+        ).deriveFont(App.desktopConfig.fontSize.toFloat())
     }
     val res = FontUIResource(font)
     logger("Util").info("Init global font as ${font.fontName}")

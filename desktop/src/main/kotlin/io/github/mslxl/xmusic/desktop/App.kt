@@ -7,10 +7,9 @@ import io.github.mslxl.ktswing.frame
 import io.github.mslxl.ktswing.resizable
 import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.i18n.I18N
-import io.github.mslxl.xmusic.common.i18n.I18NKey
-import io.github.mslxl.xmusic.common.i18n.I18NLocalCode
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.src.SourceLocalMusic
+import io.github.mslxl.xmusic.desktop.config.DesktopConfig
 import io.github.mslxl.xmusic.desktop.fs.CacheIndexDBImpl
 import io.github.mslxl.xmusic.desktop.fs.LocalFile
 import io.github.mslxl.xmusic.desktop.i18n.desktopI18nRes
@@ -26,7 +25,9 @@ object App : I18N {
     private val logger = App::class.logger
     override val id: String = XMusic.appID
     override val i18n = desktopI18nRes
-    val core: XMusic = XMusic(LocalFile(), VlcjControl, CacheIndexDBImpl()).apply {
+    private val fs = LocalFile()
+    val desktopConfig = DesktopConfig(fs)
+    val core: XMusic = XMusic(fs, VlcjControl, CacheIndexDBImpl()).apply {
         addMusicSource(SourceLocalMusic(this))
     }
 

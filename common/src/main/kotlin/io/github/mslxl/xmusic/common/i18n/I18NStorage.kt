@@ -8,7 +8,7 @@ import io.github.mslxl.xmusic.common.source.SourceID
 class I18NStorage(val core: XMusic) {
     private val logger = I18NStorage::class.logger
 
-    var local: String = core.programConfig.lang
+    var local: String = core.coreConfig.lang
     val lang get() = getLang(local)
     private val data: MutableMap<SourceID, Map<I18NKey, String>> = HashMap()
     private fun getLang(local: String): String {

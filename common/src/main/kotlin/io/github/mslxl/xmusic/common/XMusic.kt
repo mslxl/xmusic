@@ -21,7 +21,7 @@ class XMusic(
 ) {
     val playlist = VirtualPlaylist()
     val network = NetworkHandle(this)
-    val programConfig = XMusicConfig(fs)
+    val coreConfig = XMusicConfig(fs)
     val i18n = I18NStorage(this)
 
     init {

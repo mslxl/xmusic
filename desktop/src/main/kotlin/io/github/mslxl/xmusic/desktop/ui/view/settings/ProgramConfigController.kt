@@ -5,8 +5,9 @@ import javax.swing.JOptionPane
 
 class ProgramConfigController(private val view: ProgramConfigView) {
     fun commit() {
-        with(App.core.programConfig) {
-            var needRestart = false
+        var needRestart = false
+
+        with(App.desktopConfig) {
             if (font != view.comboBoxFont.selectedItem) {
                 font = view.comboBoxFont.selectedItem?.toString() ?: defaultFont.first
                 needRestart = true
@@ -16,15 +17,17 @@ class ProgramConfigController(private val view: ProgramConfigView) {
                 fontSize = configFontSize
                 needRestart = true
             }
+            save()
+        }
+        with(App.core.coreConfig) {
             if (lang != view.textFieldLang.text) {
                 lang = view.textFieldLang.text
                 needRestart = true
             }
-
             save()
-            if (needRestart) {
-                JOptionPane.showMessageDialog(view.root, "Some settings need restart to take effect")
-            }
+        }
+        if (needRestart) {
+            JOptionPane.showMessageDialog(view.root, "Some settings need restart to take effect")
         }
     }
 }

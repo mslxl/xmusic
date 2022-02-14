@@ -12,7 +12,8 @@ import javax.swing.*
 
 class ProgramConfigView(override val parent: View?) : View {
     private val controller = ProgramConfigController(this)
-    val config get() = App.core.programConfig
+    val coreCfg get() = App.core.coreConfig
+    val desktopCfg get() = App.desktopConfig
 
     val comboBoxFont: JComboBox<String>
     val spinnerFontSize: JSpinner
@@ -50,7 +51,7 @@ class ProgramConfigView(override val parent: View?) : View {
                     label("Language:")
                 }
                 center {
-                    textField = textField(text = config.lang)
+                    textField = textField(text = coreCfg.lang)
                 }
             }
         }
@@ -69,7 +70,7 @@ class ProgramConfigView(override val parent: View?) : View {
                 center {
                     spinner = spinner(
                         SpinnerNumberModel(
-                            config.fontSize,
+                            desktopCfg.fontSize,
                             1, 100,
                             1
                         )
@@ -90,8 +91,8 @@ class ProgramConfigView(override val parent: View?) : View {
                     label("Font")
                 }
                 center {
-                    comboBox = comboBox(config.availableFont) {
-                        val curFont = config.font
+                    comboBox = comboBox(desktopCfg.availableFont) {
+                        val curFont = desktopCfg.font
                         for (i in 0..self.model.size) {
                             if (self.model.getElementAt(i) == curFont) {
                                 self.selectedIndex = i
