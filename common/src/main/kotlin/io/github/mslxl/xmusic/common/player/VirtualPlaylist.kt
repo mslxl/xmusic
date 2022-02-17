@@ -1,6 +1,6 @@
 package io.github.mslxl.xmusic.common.player
 
-import io.github.mslxl.xmusic.common.entity.EntitySong
+import io.github.mslxl.xmusic.common.addon.entity.EntitySong
 import io.github.mslxl.xmusic.common.logger
 import kotlin.random.Random
 

@@ -1,7 +1,7 @@
-package io.github.mslxl.xmusic.common.entity
+package io.github.mslxl.xmusic.common.addon.entity
 
-import io.github.mslxl.xmusic.common.source.SourceID
-import io.github.mslxl.xmusic.common.source.processor.ExplorableIndex
+import io.github.mslxl.xmusic.common.addon.SourceID
+import io.github.mslxl.xmusic.common.addon.processor.ExplorableIndex
 import java.util.*
 
 

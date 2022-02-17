@@ -1,8 +1,8 @@
-package io.github.mslxl.xmusic.common.source.processor.ext
+package io.github.mslxl.xmusic.common.addon.processor.ext
 
-import io.github.mslxl.xmusic.common.source.MusicSource
-import io.github.mslxl.xmusic.common.source.processor.ExplorableEntity
-import io.github.mslxl.xmusic.common.source.processor.ExplorableIndex
+import io.github.mslxl.xmusic.common.addon.MusicSource
+import io.github.mslxl.xmusic.common.addon.processor.ExplorableEntity
+import io.github.mslxl.xmusic.common.addon.processor.ExplorableIndex
 
 /**
  * [AlbumProcessor] or [SongProcessor] can impl this interface

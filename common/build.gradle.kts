@@ -14,8 +14,8 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.0-native-mt")
 
-
-    api("com.google.code.gson:gson:2.8.9")
+    api("org.jetbrains.kotlin:kotlin-reflect:1.6.10")
+    api("com.google.code.gson:gson:2.9.0")
     api("org.apache.httpcomponents:httpclient:4.5.13")
 
     api("org.slf4j:slf4j-api:2.0.0-alpha5")

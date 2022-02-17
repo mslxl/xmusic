@@ -1,7 +1,7 @@
-package io.github.mslxl.xmusic.common.source.processor
+package io.github.mslxl.xmusic.common.addon.processor
 
-import io.github.mslxl.xmusic.common.entity.EntitySongIndex
-import io.github.mslxl.xmusic.common.entity.EntitySong
+import io.github.mslxl.xmusic.common.addon.entity.EntitySong
+import io.github.mslxl.xmusic.common.addon.entity.EntitySongIndex
 import java.net.URL
 
 interface SongProcessor {

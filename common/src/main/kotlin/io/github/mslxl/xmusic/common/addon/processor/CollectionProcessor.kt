@@ -1,8 +1,8 @@
-package io.github.mslxl.xmusic.common.source.processor
+package io.github.mslxl.xmusic.common.addon.processor
 
-import io.github.mslxl.xmusic.common.entity.EntityCollection
-import io.github.mslxl.xmusic.common.entity.EntityCollectionIndex
-import io.github.mslxl.xmusic.common.entity.EntitySongIndex
+import io.github.mslxl.xmusic.common.addon.entity.EntityCollection
+import io.github.mslxl.xmusic.common.addon.entity.EntityCollectionIndex
+import io.github.mslxl.xmusic.common.addon.entity.EntitySongIndex
 
 interface CollectionProcessor {
     suspend fun getAllCollection(): Sequence<EntityCollectionIndex>

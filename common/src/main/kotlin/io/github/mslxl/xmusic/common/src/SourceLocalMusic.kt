@@ -1,19 +1,21 @@
 package io.github.mslxl.xmusic.common.src
 
 import io.github.mslxl.xmusic.common.XMusic
+import io.github.mslxl.xmusic.common.addon.MusicSource
+import io.github.mslxl.xmusic.common.addon.SourceID
+import io.github.mslxl.xmusic.common.addon.XMusicEventRegister
+import io.github.mslxl.xmusic.common.addon.entity.EntityCollection
+import io.github.mslxl.xmusic.common.addon.entity.EntityCollectionIndex
+import io.github.mslxl.xmusic.common.addon.entity.EntitySong
+import io.github.mslxl.xmusic.common.addon.entity.EntitySongIndex
+import io.github.mslxl.xmusic.common.addon.processor.CollectionProcessor
+import io.github.mslxl.xmusic.common.addon.processor.SongProcessor
 import io.github.mslxl.xmusic.common.config.SourceConfig
-import io.github.mslxl.xmusic.common.entity.EntityCollection
-import io.github.mslxl.xmusic.common.entity.EntityCollectionIndex
-import io.github.mslxl.xmusic.common.entity.EntitySong
-import io.github.mslxl.xmusic.common.entity.EntitySongIndex
+import io.github.mslxl.xmusic.common.events.XMusicInitializationEvent
 import io.github.mslxl.xmusic.common.i18n.I18NKey
 import io.github.mslxl.xmusic.common.i18n.I18NLocalCode
 import io.github.mslxl.xmusic.common.i18n.i18n
 import io.github.mslxl.xmusic.common.logger
-import io.github.mslxl.xmusic.common.source.MusicSource
-import io.github.mslxl.xmusic.common.source.SourceID
-import io.github.mslxl.xmusic.common.source.processor.CollectionProcessor
-import io.github.mslxl.xmusic.common.source.processor.SongProcessor
 import io.github.mslxl.xmusic.common.util.MusicUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,7 +27,9 @@ import kotlin.coroutines.suspendCoroutine
 /**
  *
  */
-class SourceLocalMusic(override var core: XMusic) : MusicSource {
+class SourceLocalMusic() : MusicSource {
+    lateinit var core: XMusic
+
     companion object {
         private val logger = SourceLocalMusic::class.logger
     }
@@ -36,18 +40,24 @@ class SourceLocalMusic(override var core: XMusic) : MusicSource {
     override val id: SourceID = "io.github.mslxl.xmusic.common.localmusic"
 
     override val i18n: Map<I18NLocalCode, () -> List<Pair<I18NKey, String>>> = mapOf(
-        "zh_CN" to {
-            listOf(
-                "localmusic.name" to "本地音乐",
-                "localmusic.item.uncatalogued" to "未分类"
-            )
-        },
-        "en" to {
-            listOf(
-                "localmusic.name" to "Local Music",
-                "localmusic.item.uncatalogued" to "Uncatalogued"
-            )
-        })
+            "zh_CN" to {
+                listOf(
+                        "localmusic.name" to "本地音乐",
+                        "localmusic.item.uncatalogued" to "未分类"
+                )
+            },
+            "en" to {
+                listOf(
+                        "localmusic.name" to "Local Music",
+                        "localmusic.item.uncatalogued" to "Uncatalogued"
+                )
+            })
+
+    @XMusicEventRegister
+    fun init(event: XMusicInitializationEvent) {
+
+
+    }
 
     override val information = object : SongProcessor {
         override suspend fun getDetail(entitySongPreview: EntitySongIndex): Sequence<EntitySong> {
@@ -63,27 +73,27 @@ class SourceLocalMusic(override var core: XMusic) : MusicSource {
                 if ('-' in name) {
                     val (singer, title) = name.split('-', limit = 2).map(String::trim)
                     continuation.resume(
-                        sequenceOf(
-                            EntitySong(
-                                index = entitySongPreview,
-                                id = entitySongPreview.id,
-                                title = title,
-                                singer = singer,
-                                cover = cover
+                            sequenceOf(
+                                    EntitySong(
+                                            index = entitySongPreview,
+                                            id = entitySongPreview.id,
+                                            title = title,
+                                            singer = singer,
+                                            cover = cover
+                                    )
                             )
-                        )
                     )
                 } else {
                     continuation.resume(
-                        sequenceOf(
-                            EntitySong(
-                                index = entitySongPreview,
-                                id = entitySongPreview.id,
-                                title = name,
-                                singer = "Unknown",
-                                cover = cover
+                            sequenceOf(
+                                    EntitySong(
+                                            index = entitySongPreview,
+                                            id = entitySongPreview.id,
+                                            title = name,
+                                            singer = "Unknown",
+                                            cover = cover
+                                    )
                             )
-                        )
                     )
                 }
             }
@@ -131,10 +141,10 @@ class SourceLocalMusic(override var core: XMusic) : MusicSource {
 
         override suspend fun getDetail(entity: EntityCollectionIndex): EntityCollection {
             return EntityCollection(
-                index = entity,
-                name = entity.id.ifBlank { "localmusic.item.uncatalogued".i18n(core, this@SourceLocalMusic.id) },
-                desc = "Local music in folder ${entity.id}",
-                creator = "Filesystem"
+                    index = entity,
+                    name = entity.id.ifBlank { "localmusic.item.uncatalogued".i18n(core, this@SourceLocalMusic.id) },
+                    desc = "Local music in folder ${entity.id}",
+                    creator = "Filesystem"
             )
         }
 

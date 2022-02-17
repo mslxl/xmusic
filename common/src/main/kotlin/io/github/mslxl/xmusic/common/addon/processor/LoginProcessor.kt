@@ -1,4 +1,4 @@
-package io.github.mslxl.xmusic.common.source.processor
+package io.github.mslxl.xmusic.common.addon.processor
 
 enum class LoginStatus {
     SUCCESS,

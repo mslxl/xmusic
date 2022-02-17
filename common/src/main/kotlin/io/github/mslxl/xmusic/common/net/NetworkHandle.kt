@@ -1,8 +1,8 @@
 package io.github.mslxl.xmusic.common.net
 
 import io.github.mslxl.xmusic.common.XMusic
+import io.github.mslxl.xmusic.common.addon.MusicSource
 import io.github.mslxl.xmusic.common.logger
-import io.github.mslxl.xmusic.common.source.MusicSource
 import java.io.File
 import java.net.URL
 

@@ -2,8 +2,8 @@ package io.github.mslxl.xmusic.common.config
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import io.github.mslxl.xmusic.common.addon.SourceID
 import io.github.mslxl.xmusic.common.fs.FileSystem
-import io.github.mslxl.xmusic.common.source.SourceID
 import java.util.*
 
 open class SourceConfig(internal val fs: FileSystem, val id: SourceID) {

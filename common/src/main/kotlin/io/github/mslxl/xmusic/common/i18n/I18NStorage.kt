@@ -1,9 +1,9 @@
 package io.github.mslxl.xmusic.common.i18n
 
 import io.github.mslxl.xmusic.common.XMusic
+import io.github.mslxl.xmusic.common.addon.MusicSource
+import io.github.mslxl.xmusic.common.addon.SourceID
 import io.github.mslxl.xmusic.common.logger
-import io.github.mslxl.xmusic.common.source.MusicSource
-import io.github.mslxl.xmusic.common.source.SourceID
 
 class I18NStorage(val core: XMusic) {
     private val logger = I18NStorage::class.logger

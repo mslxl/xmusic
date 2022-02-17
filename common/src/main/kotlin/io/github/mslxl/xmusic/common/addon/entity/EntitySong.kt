@@ -1,6 +1,6 @@
-package io.github.mslxl.xmusic.common.entity
+package io.github.mslxl.xmusic.common.addon.entity
 
-import io.github.mslxl.xmusic.common.source.processor.ExplorableEntity
+import io.github.mslxl.xmusic.common.addon.processor.ExplorableEntity
 import java.net.URL
 
 /**
