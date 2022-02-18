@@ -10,7 +10,7 @@ import io.github.mslxl.xmusic.common.addon.entity.EntitySong
 import io.github.mslxl.xmusic.common.addon.entity.EntitySongIndex
 import io.github.mslxl.xmusic.common.addon.processor.CollectionProcessor
 import io.github.mslxl.xmusic.common.addon.processor.SongProcessor
-import io.github.mslxl.xmusic.common.config.SourceConfig
+import io.github.mslxl.xmusic.common.config.ConfigurationFactory
 import io.github.mslxl.xmusic.common.events.XMusicInitializationEvent
 import io.github.mslxl.xmusic.common.i18n.I18NKey
 import io.github.mslxl.xmusic.common.i18n.I18NLocalCode
@@ -34,8 +34,6 @@ class SourceLocalMusic() : MusicSource {
         private val logger = SourceLocalMusic::class.logger
     }
 
-    lateinit var config: SourceConfig
-
     override val name: String = "localmusic.name"
     override val id: SourceID = "io.github.mslxl.xmusic.common.localmusic"
 
@@ -53,10 +51,14 @@ class SourceLocalMusic() : MusicSource {
                 )
             })
 
+    override val configuration by lazy {
+        ConfigurationFactory().buildFrom<SourceLocalMusicConfiguration>(id)
+    }
+
     @XMusicEventRegister
     fun init(event: XMusicInitializationEvent) {
-
-
+        core = event.source
+        core.i18n.insert(this)
     }
 
     override val information = object : SongProcessor {
@@ -128,15 +130,17 @@ class SourceLocalMusic() : MusicSource {
         }
 
         override suspend fun getAllCollection(): Sequence<EntityCollectionIndex> {
-            return config.getNullable("path")?.let { path ->
+            return if (configuration.path == null) {
+                emptySequence()
+            } else {
+                val path = configuration.path
                 val root = File(path)
-                // The code that I wrote is so ugly
                 withContext(Dispatchers.IO) {
                     listMusicDir(root, root).map {
                         EntityCollectionIndex(it, this@SourceLocalMusic.id)
                     }
                 }
-            } ?: emptySequence()
+            }
         }
 
         override suspend fun getDetail(entity: EntityCollectionIndex): EntityCollection {
@@ -153,10 +157,5 @@ class SourceLocalMusic() : MusicSource {
                 EntitySongIndex(it.absolutePath, this@SourceLocalMusic.id)
             }.asSequence()
         }
-    }
-
-    override fun configure(config: SourceConfig) {
-        config.markType("path", "Music Folder", SourceConfig.ItemType.TEXT)
-        this.config = config
     }
 }

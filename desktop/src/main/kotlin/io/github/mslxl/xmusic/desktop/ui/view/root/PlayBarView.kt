@@ -7,8 +7,10 @@ import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayout
 import io.github.mslxl.ktswing.layout.borderLayoutCenter
 import io.github.mslxl.ktswing.onAction
-import io.github.mslxl.xmusic.common.entity.EntitySong
+import io.github.mslxl.xmusic.common.addon.MusicSource
+import io.github.mslxl.xmusic.common.addon.entity.EntitySong
 import io.github.mslxl.xmusic.common.logger
+import io.github.mslxl.xmusic.common.manager.AddonsMan
 import io.github.mslxl.xmusic.common.player.VirtualPlaylist
 import io.github.mslxl.xmusic.common.util.MusicUtils
 import io.github.mslxl.xmusic.desktop.App
@@ -134,7 +136,7 @@ class PlayBarView(override val parent: View?) : View {
             VlcjControl.addPlayInfoListener { info, _ ->
                 // Download image and show it
                 val coverFile = info.cover?.let { url ->
-                    App.core.network.download(App.core.getSrc(info.index.source), url, true)
+                    App.core.network.download(AddonsMan.getInstance<MusicSource>(info.index.source)!!, url, true)
                 } ?: MusicUtils.defaultCover
                 self.icon = ImageIcon(coverFile.inputStream().readBytes()).scalaImageIcon(64)
             }

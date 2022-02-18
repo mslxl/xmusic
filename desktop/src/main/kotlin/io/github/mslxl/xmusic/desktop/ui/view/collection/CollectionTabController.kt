@@ -1,6 +1,6 @@
 package io.github.mslxl.xmusic.desktop.ui.view.collection
 
-import io.github.mslxl.xmusic.common.entity.EntityCollection
+import io.github.mslxl.xmusic.common.addon.entity.EntityCollection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

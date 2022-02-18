@@ -5,11 +5,11 @@ import io.github.mslxl.ktswing.attr
 import io.github.mslxl.ktswing.component.*
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayout
-import io.github.mslxl.xmusic.common.source.MusicSource
-import io.github.mslxl.xmusic.common.source.isSearchable
-import io.github.mslxl.xmusic.common.source.processor.ext.isAlbumSearchable
-import io.github.mslxl.xmusic.common.source.processor.ext.isCollectionSearchable
-import io.github.mslxl.xmusic.common.source.processor.ext.isSongSearchable
+import io.github.mslxl.xmusic.common.addon.MusicSource
+import io.github.mslxl.xmusic.common.addon.isSearchable
+import io.github.mslxl.xmusic.common.addon.processor.ext.isAlbumSearchable
+import io.github.mslxl.xmusic.common.addon.processor.ext.isCollectionSearchable
+import io.github.mslxl.xmusic.common.addon.processor.ext.isSongSearchable
 import io.github.mslxl.xmusic.desktop.ui.compoent.fvBox
 import io.github.mslxl.xmusic.desktop.ui.view.View
 import io.github.mslxl.xmusic.desktop.ui.view.addView

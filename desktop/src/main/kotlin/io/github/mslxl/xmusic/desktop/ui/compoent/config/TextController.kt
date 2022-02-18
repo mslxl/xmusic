@@ -5,8 +5,7 @@ import io.github.mslxl.ktswing.component.panelWith
 import io.github.mslxl.ktswing.component.textField
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayout
-import io.github.mslxl.xmusic.common.config.SourceConfig
-import io.github.mslxl.xmusic.common.config.SourceConfigTran
+import io.github.mslxl.xmusic.common.config.ConfigurationJournal
 import io.github.mslxl.xmusic.common.logger
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
@@ -33,8 +32,8 @@ class TextController : ConfigItemComponentController, FocusListener {
             }
         }
     }
-    private var config: SourceConfigTran? = null
-    private var index: SourceConfig.ItemIndex? = null
+    private var journal: ConfigurationJournal? = null
+    private var key: String? = null
     private val startEditListener = LinkedList<() -> Unit>()
     private val endEditListener = LinkedList<() -> Unit>()
 
@@ -42,11 +41,11 @@ class TextController : ConfigItemComponentController, FocusListener {
         textField.addFocusListener(this)
     }
 
-    override fun setData(trans: SourceConfigTran, itemIndex: SourceConfig.ItemIndex) {
-        this.config = trans
-        this.index = itemIndex
-        label.text = "${itemIndex.name}:"
-        textField.text = trans.getNullable(itemIndex.key) ?: ""
+    override fun setData(journal: ConfigurationJournal, key: String) {
+        this.journal = journal
+        this.key = key
+        label.text = key
+        textField.text = journal.exposedDefaultValue[key]?.toString() ?: ""
         pan.updateUI()
     }
 
@@ -63,15 +62,17 @@ class TextController : ConfigItemComponentController, FocusListener {
     }
 
     override fun focusGained(e: FocusEvent?) {
-        logger.info("Start edit ${index?.key}(${index?.name})")
+        logger.info("Start edit $key")
         startEditListener.forEach {
             it.invoke()
         }
     }
 
     override fun focusLost(e: FocusEvent?) {
-        logger.info("End edit ${index?.key}(${index?.name})")
-        index?.let { index -> config?.set(index.key, textField.text.trim()) }
+        logger.info("End edit $key)")
+        key?.let { key ->
+            journal?.set(key, textField.text.trim())
+        }
         endEditListener.forEach {
             it.invoke()
         }

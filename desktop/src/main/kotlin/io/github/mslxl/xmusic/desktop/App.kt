@@ -8,8 +8,7 @@ import io.github.mslxl.ktswing.resizable
 import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.i18n.I18N
 import io.github.mslxl.xmusic.common.logger
-import io.github.mslxl.xmusic.common.src.SourceLocalMusic
-import io.github.mslxl.xmusic.desktop.config.DesktopConfig
+import io.github.mslxl.xmusic.common.manager.PlatformMan
 import io.github.mslxl.xmusic.desktop.fs.CacheIndexDBImpl
 import io.github.mslxl.xmusic.desktop.fs.LocalFile
 import io.github.mslxl.xmusic.desktop.i18n.desktopI18nRes
@@ -26,14 +25,19 @@ object App : I18N {
     override val id: String = XMusic.appID
     override val i18n = desktopI18nRes
     private val fs = LocalFile()
-    val desktopConfig = DesktopConfig(fs)
-    val core: XMusic = XMusic(fs, VlcjControl, CacheIndexDBImpl()).apply {
-        addMusicSource(SourceLocalMusic(this))
+    val core: XMusic
+
+    init {
+        logger.info("XMusic desktop($version) start")
+        PlatformMan(fs, CacheIndexDBImpl())
+        core = XMusic(fs, VlcjControl, CacheIndexDBImpl())
+        core.startInit()
     }
+
 
     @JvmStatic
     fun main(args: Array<String>) {
-        logger.info("XMusic desktop($version) start")
+
         try {
             initGlobalFont()
             JFrame.setDefaultLookAndFeelDecorated(true)

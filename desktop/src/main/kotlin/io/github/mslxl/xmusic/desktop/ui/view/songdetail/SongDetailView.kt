@@ -5,8 +5,7 @@ import io.github.mslxl.ktswing.component.*
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayout
 import io.github.mslxl.ktswing.layout.flowLayout
-import io.github.mslxl.ktswing.onAction
-import io.github.mslxl.xmusic.common.entity.EntitySong
+import io.github.mslxl.xmusic.common.addon.entity.EntitySong
 import io.github.mslxl.xmusic.common.i18n.i18n
 import io.github.mslxl.xmusic.common.util.MusicUtils
 import io.github.mslxl.xmusic.desktop.App
@@ -15,7 +14,6 @@ import io.github.mslxl.xmusic.desktop.ui.view.View
 import javax.swing.BorderFactory
 import javax.swing.ImageIcon
 import javax.swing.JComponent
-import javax.swing.JOptionPane
 
 class SongDetailView(override val parent: View, val song: EntitySong) : View {
     private val controller = SongDetailController(this)

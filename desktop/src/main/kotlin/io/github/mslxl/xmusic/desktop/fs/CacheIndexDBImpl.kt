@@ -1,7 +1,7 @@
 package io.github.mslxl.xmusic.desktop.fs
 
-import io.github.mslxl.xmusic.common.fs.CacheIndexDBManager
 import io.github.mslxl.xmusic.common.logger
+import io.github.mslxl.xmusic.common.platform.CacheIndexDBManager
 import io.github.mslxl.xmusic.desktop.EnvVar
 import org.apache.commons.codec.digest.DigestUtils
 import java.io.File
@@ -11,7 +11,7 @@ class CacheIndexDBImpl : CacheIndexDBManager {
     companion object {
         private val logger = CacheIndexDBImpl::class.logger
 
-        private val cacheDir = File(EnvVar.programCfgDir, "cache").apply {
+        private val cacheDir = File(EnvVar.programDir, "cache").apply {
             if (!exists()) mkdirs()
         }
         private val indexFile = File(cacheDir, "index.db")

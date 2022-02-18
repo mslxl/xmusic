@@ -1,7 +1,7 @@
 package io.github.mslxl.xmusic.desktop.ui.compoent.config
 
-import io.github.mslxl.xmusic.common.config.SourceConfig
-import io.github.mslxl.xmusic.common.config.SourceConfigTran
+import io.github.mslxl.xmusic.common.config.ConfigurationJournal
+import io.github.mslxl.xmusic.common.config.Type
 import io.github.mslxl.xmusic.common.logger
 
 class ControllerBuilder {
@@ -9,16 +9,17 @@ class ControllerBuilder {
         val logger = ControllerBuilder::class.logger
     }
 
-    private val instances = hashMapOf<SourceConfig.ItemType, ConfigItemComponentController>()
+    private val instances = hashMapOf<Type, ConfigItemComponentController>()
 
     /**
      * Single instance
      */
-    fun getController(trans: SourceConfigTran, itemIndex: SourceConfig.ItemIndex): ConfigItemComponentController {
-        return instances.getOrPut(itemIndex.type) {
-            createController(itemIndex)
+    fun getController(journal: ConfigurationJournal, key: String): ConfigItemComponentController {
+        val type = journal.exposedKey[key]!!
+        return instances.getOrPut(type) {
+            createController(type)
         }.apply {
-            setData(trans, itemIndex)
+            setData(journal, key)
         }
     }
 
@@ -26,12 +27,13 @@ class ControllerBuilder {
      * Not single instance
      */
     fun createController(
-        itemIndex: SourceConfig.ItemIndex
+            type: Type
     ): ConfigItemComponentController {
-        return when (itemIndex.type) {
-            SourceConfig.ItemType.TEXT -> TextController()
-            SourceConfig.ItemType.PASSWORD -> PwdController()
-            else -> error("Unknown config type ${itemIndex.type}")
+        return when (type) {
+            Type.Text -> TextController()
+            Type.EncryptText -> PwdController()
+            Type.FilePath -> TextController() //TODO add a file chooser for this type
+            else -> error("Unknown config type $type")
         }
     }
 

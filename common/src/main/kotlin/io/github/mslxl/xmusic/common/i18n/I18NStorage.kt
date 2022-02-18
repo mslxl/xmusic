@@ -1,6 +1,7 @@
 package io.github.mslxl.xmusic.common.i18n
 
 import io.github.mslxl.xmusic.common.XMusic
+import io.github.mslxl.xmusic.common.XMusicConfiguration
 import io.github.mslxl.xmusic.common.addon.MusicSource
 import io.github.mslxl.xmusic.common.addon.SourceID
 import io.github.mslxl.xmusic.common.logger
@@ -8,7 +9,8 @@ import io.github.mslxl.xmusic.common.logger
 class I18NStorage(val core: XMusic) {
     private val logger = I18NStorage::class.logger
 
-    var local: String = core.coreConfig.lang
+
+    var local: String = XMusicConfiguration.language
     val lang get() = getLang(local)
     private val data: MutableMap<SourceID, Map<I18NKey, String>> = HashMap()
     private fun getLang(local: String): String {
@@ -23,7 +25,7 @@ class I18NStorage(val core: XMusic) {
             src.i18n.keys.find { getLang(it) == lang }?.let {
                 logger.info("install i18n text $lang from ${src.id}")
                 src.i18n[it]!!.invoke()
-            }?: kotlin.run {
+            } ?: kotlin.run {
                 logger.warn("fallback to English language")
                 src.i18n["en"]!!.invoke()
             }

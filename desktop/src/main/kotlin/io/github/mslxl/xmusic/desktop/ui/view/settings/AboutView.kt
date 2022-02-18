@@ -23,7 +23,6 @@ class AboutView(override val parent: View?) : View {
                         label("XMusic desktop ${App.version}")
                         label("XMusic core ${XMusic.version}")
                         label("Licenses( include the open source project that XMusic depend on):")
-                        //TODO split it by name
                     }
                 }
                 center {

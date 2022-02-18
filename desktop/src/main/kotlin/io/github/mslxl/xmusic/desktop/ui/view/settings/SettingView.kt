@@ -27,10 +27,10 @@ class SettingView(override val parent: View?) : View {
     }
 
     private fun TabbedPaneScope.musicSourceConfigTabs() {
-        controller.src.forEach { sourceConfig ->
-            val src = App.core.getSrc(sourceConfig.id)
-            tabPanelWith(src.name.i18n(App.core, src.id), borderLayoutCenter()) {
-                addView(SourceConfigTabView(sourceConfig, this@SettingView))
+        controller.src.forEach { sourceHaveCfg ->
+            val configuration = sourceHaveCfg.configuration!!
+            tabPanelWith(sourceHaveCfg.name.i18n(App.core, sourceHaveCfg.id), borderLayoutCenter()) {
+                addView(SourceConfigTabView(configuration, this@SettingView))
             }
         }
     }

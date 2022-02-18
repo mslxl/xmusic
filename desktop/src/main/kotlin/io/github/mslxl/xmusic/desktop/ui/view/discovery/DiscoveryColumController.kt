@@ -1,9 +1,9 @@
 package io.github.mslxl.xmusic.desktop.ui.view.discovery
 
-import io.github.mslxl.xmusic.common.entity.EntitySong
+import io.github.mslxl.xmusic.common.addon.entity.EntitySong
+import io.github.mslxl.xmusic.common.addon.processor.ExplorableEntity
+import io.github.mslxl.xmusic.common.addon.processor.ExplorableIndex
 import io.github.mslxl.xmusic.common.logger
-import io.github.mslxl.xmusic.common.source.processor.ExplorableEntity
-import io.github.mslxl.xmusic.common.source.processor.ExplorableIndex
 import io.github.mslxl.xmusic.common.util.SequenceList
 import io.github.mslxl.xmusic.desktop.ui.view.findParent
 import io.github.mslxl.xmusic.desktop.ui.view.root.RootView

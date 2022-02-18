@@ -6,11 +6,11 @@ import io.github.mslxl.ktswing.component.panel
 import io.github.mslxl.ktswing.component.scrollPane
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayoutCenter
+import io.github.mslxl.xmusic.common.addon.MusicSource
+import io.github.mslxl.xmusic.common.addon.processor.ExplorableEntity
+import io.github.mslxl.xmusic.common.addon.processor.ExplorableIndex
+import io.github.mslxl.xmusic.common.addon.processor.ExplorerProcessor
 import io.github.mslxl.xmusic.common.i18n.I18NKey
-import io.github.mslxl.xmusic.common.source.MusicSource
-import io.github.mslxl.xmusic.common.source.processor.ExplorableEntity
-import io.github.mslxl.xmusic.common.source.processor.ExplorableIndex
-import io.github.mslxl.xmusic.common.source.processor.ExplorerProcessor
 import io.github.mslxl.xmusic.common.util.MusicUtils
 import io.github.mslxl.xmusic.desktop.App
 import io.github.mslxl.xmusic.desktop.ui.util.scale
@@ -22,10 +22,10 @@ import javax.swing.*
 
 
 class DiscoveryColumView<T : ExplorableIndex<E>, E : ExplorableEntity>(
-    val i18nKey: I18NKey,
-    val processor: ExplorerProcessor<T, E>,
-    val musicSource: MusicSource,
-    override val parent: View
+        val i18nKey: I18NKey,
+        val processor: ExplorerProcessor<T, E>,
+        val musicSource: MusicSource,
+        override val parent: View
 ) :
     View {
     val scrollPane: JScrollPane

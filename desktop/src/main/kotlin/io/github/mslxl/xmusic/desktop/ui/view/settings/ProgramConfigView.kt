@@ -6,14 +6,13 @@ import io.github.mslxl.ktswing.component.adv.lazyPanelWith
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayout
 import io.github.mslxl.ktswing.layout.borderLayoutCenter
-import io.github.mslxl.xmusic.desktop.App
+import io.github.mslxl.xmusic.common.XMusicConfiguration
+import io.github.mslxl.xmusic.desktop.config.DesktopConfig
 import io.github.mslxl.xmusic.desktop.ui.view.View
 import javax.swing.*
 
 class ProgramConfigView(override val parent: View?) : View {
     private val controller = ProgramConfigController(this)
-    val coreCfg get() = App.core.coreConfig
-    val desktopCfg get() = App.desktopConfig
 
     val comboBoxFont: JComboBox<String>
     val spinnerFontSize: JSpinner
@@ -51,7 +50,7 @@ class ProgramConfigView(override val parent: View?) : View {
                     label("Language:")
                 }
                 center {
-                    textField = textField(text = coreCfg.lang)
+                    textField = textField(text = XMusicConfiguration.Companion.language)
                 }
             }
         }
@@ -69,11 +68,11 @@ class ProgramConfigView(override val parent: View?) : View {
                 }
                 center {
                     spinner = spinner(
-                        SpinnerNumberModel(
-                            desktopCfg.fontSize,
-                            1, 100,
-                            1
-                        )
+                            SpinnerNumberModel(
+                                    DesktopConfig.fontSize,
+                                    1, 100,
+                                    1
+                            )
                     )
                 }
             }
@@ -91,8 +90,8 @@ class ProgramConfigView(override val parent: View?) : View {
                     label("Font")
                 }
                 center {
-                    comboBox = comboBox(desktopCfg.availableFont) {
-                        val curFont = desktopCfg.font
+                    comboBox = comboBox(controller.availableFont) {
+                        val curFont = DesktopConfig.font
                         for (i in 0..self.model.size) {
                             if (self.model.getElementAt(i) == curFont) {
                                 self.selectedIndex = i

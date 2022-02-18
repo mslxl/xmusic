@@ -1,19 +1,18 @@
 import io.github.mslxl.xmusic.common.XMusic
-import io.github.mslxl.xmusic.common.config.SourceConfig
-import io.github.mslxl.xmusic.common.entity.EntitySong
-import io.github.mslxl.xmusic.common.entity.EntitySongIndex
+import io.github.mslxl.xmusic.common.addon.MusicSource
+import io.github.mslxl.xmusic.common.addon.entity.EntitySong
+import io.github.mslxl.xmusic.common.addon.entity.EntitySongIndex
+import io.github.mslxl.xmusic.common.addon.processor.ExplorerProcessor
+import io.github.mslxl.xmusic.common.addon.processor.SongProcessor
+import io.github.mslxl.xmusic.common.addon.processor.ext.SearchableProcessor
 import io.github.mslxl.xmusic.common.i18n.I18NKey
 import io.github.mslxl.xmusic.common.i18n.I18NLocalCode
 import io.github.mslxl.xmusic.common.logger
-import io.github.mslxl.xmusic.common.source.MusicSource
-import io.github.mslxl.xmusic.common.source.processor.ExplorerProcessor
-import io.github.mslxl.xmusic.common.source.processor.SongProcessor
-import io.github.mslxl.xmusic.common.source.processor.ext.SearchableProcessor
 import io.github.mslxl.xmusic.desktop.App
 import java.net.URL
 import kotlin.random.Random
 
-class FakeMusicSource(override var core: XMusic) : MusicSource {
+class FakeMusicSource(var core: XMusic) : MusicSource {
     override val name = "fake music source"
     override val id = "io.github.mslxl.xmusic.test.fakesource"
     override val information = FakeSongProcessor(this)
@@ -35,15 +34,11 @@ class FakeMusicSource(override var core: XMusic) : MusicSource {
             "Test 1" to information
         )
 
-    override fun configure(config: SourceConfig) {
-        config.markType("field.1", "Field 01", SourceConfig.ItemType.TEXT)
-        config.markType("field.2", "Field 02", SourceConfig.ItemType.PASSWORD)
-    }
 }
 
 
 class FakeSongProcessor(private val src: FakeMusicSource) : SongProcessor,
-    SearchableProcessor<EntitySongIndex, EntitySong>,
+        SearchableProcessor<EntitySongIndex, EntitySong>,
     ExplorerProcessor<EntitySongIndex, EntitySong> {
     companion object {
         private val logger = FakeSongProcessor::class.logger
@@ -104,7 +99,6 @@ class FakeSongProcessor(private val src: FakeMusicSource) : SongProcessor,
 }
 
 fun main() {
-    App.core.addMusicSource(FakeMusicSource(App.core))
     App.main(emptyArray())
 
 }

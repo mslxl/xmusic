@@ -4,11 +4,11 @@ import io.github.mslxl.ktswing.attr
 import io.github.mslxl.ktswing.component.*
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.onAction
-import io.github.mslxl.xmusic.common.entity.EntitySong
-import io.github.mslxl.xmusic.common.entity.EntitySongIndex
+import io.github.mslxl.xmusic.common.addon.MusicSource
+import io.github.mslxl.xmusic.common.addon.entity.EntitySong
+import io.github.mslxl.xmusic.common.addon.entity.EntitySongIndex
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.player.VirtualPlaylist
-import io.github.mslxl.xmusic.common.source.MusicSource
 import io.github.mslxl.xmusic.desktop.ui.util.scale
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing

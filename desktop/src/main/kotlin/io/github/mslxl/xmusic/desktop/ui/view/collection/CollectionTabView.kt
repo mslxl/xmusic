@@ -4,7 +4,7 @@ import io.github.mslxl.ktswing.component.adv.lazyPanel
 import io.github.mslxl.ktswing.component.split2Pane
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayoutCenter
-import io.github.mslxl.xmusic.common.source.MusicSource
+import io.github.mslxl.xmusic.common.addon.MusicSource
 import io.github.mslxl.xmusic.desktop.App
 import io.github.mslxl.xmusic.desktop.ui.compoent.JCollectionList
 import io.github.mslxl.xmusic.desktop.ui.compoent.JSongTable

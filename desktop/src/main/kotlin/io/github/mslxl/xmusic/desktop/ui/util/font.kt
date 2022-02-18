@@ -1,77 +1,33 @@
 package io.github.mslxl.xmusic.desktop.ui.util
 
-import com.wordpress.tips4java.robcamick.TextIcon
-import io.github.mslxl.ktswing.BasicScope
 import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.logger
-import io.github.mslxl.xmusic.desktop.App
-import java.awt.Component
+import io.github.mslxl.xmusic.desktop.config.DesktopConfig
 import java.awt.Font
-import java.io.InputStream
 import javax.swing.UIManager
 import javax.swing.plaf.FontUIResource
 
-
-object FontAwesome {
-    private val logger = FontAwesome::class.logger
-    private fun stream(ref: String): InputStream {
-        logger.info("Read source: '$ref'")
-        return App::class.java.getResourceAsStream(ref)!!
-    }
-
-    private fun InputStream.font(format: Int = Font.TRUETYPE_FONT): Font {
-        return Font.createFont(format, this).deriveFont(Font.PLAIN, 26f)
-    }
-
-    val regularFont by lazy {
-        stream("/io/github/mslxl/xmusic/desktop/res/Font Awesome 5 Free-Regular-400.otf").font()
-    }
-
-    val solidFont by lazy {
-        stream("/io/github/mslxl/xmusic/desktop/res/Font Awesome 5 Free-Solid-900.otf").font()
-    }
-}
-
-@Suppress("NOTHING_TO_INLINE", "unused")
-inline fun <T : Component> BasicScope<T>.awesomeFontRegular() {
-    self.font = FontAwesome.regularFont
-}
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T : Component> BasicScope<T>.awesomeFontSolid() {
-    self.font = FontAwesome.solidFont
-}
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun TextIcon.awesomeFontRegular() {
-    font = FontAwesome.regularFont
-}
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun TextIcon.awesomeFontSolid() {
-    font = FontAwesome.solidFont
-}
-
+private const val internalFontPath = "/io/github/mslxl/xmusic/common/res/wqy-microhei.ttc"
 fun initGlobalFont() {
     System.setProperty("awt.useSystemAAFontSettings", "on")
     System.setProperty("swing.aatext", "true")
-    val font = if (App.desktopConfig.font != App.desktopConfig.defaultFont.first) {
-        Font(App.desktopConfig.font, Font.PLAIN, App.desktopConfig.fontSize)
+    val font = if (DesktopConfig.font != "Internal") {
+        Font(DesktopConfig.font, Font.PLAIN, DesktopConfig.fontSize)
     } else {
         Font.createFont(
-            Font.TRUETYPE_FONT,
-            XMusic::class.java.getResourceAsStream(App.desktopConfig.defaultFont.second)
-        ).deriveFont(App.desktopConfig.fontSize.toFloat())
+                Font.TRUETYPE_FONT,
+                XMusic::class.java.getResourceAsStream(internalFontPath)
+        ).deriveFont(DesktopConfig.fontSize.toFloat())
     }
     val res = FontUIResource(font)
     logger("Util").info("Init global font as ${font.fontName}")
     UIManager.getDefaults()
-        .keys()
-        .iterator()
-        .forEach {
-            val value = UIManager.get(it)
-            if (value is FontUIResource) {
-                UIManager.put(it, res)
+            .keys()
+            .iterator()
+            .forEach {
+                val value = UIManager.get(it)
+                if (value is FontUIResource) {
+                    UIManager.put(it, res)
+                }
             }
-        }
 }

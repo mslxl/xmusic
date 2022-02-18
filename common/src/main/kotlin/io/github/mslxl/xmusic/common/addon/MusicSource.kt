@@ -8,7 +8,7 @@ import io.github.mslxl.xmusic.common.addon.processor.SongProcessor
 import io.github.mslxl.xmusic.common.addon.processor.ext.isAlbumSearchable
 import io.github.mslxl.xmusic.common.addon.processor.ext.isCollectionSearchable
 import io.github.mslxl.xmusic.common.addon.processor.ext.isSongSearchable
-import io.github.mslxl.xmusic.common.config.SourceConfig
+import io.github.mslxl.xmusic.common.config.UserConfiguration
 import io.github.mslxl.xmusic.common.i18n.I18N
 import io.github.mslxl.xmusic.common.i18n.I18NKey
 
@@ -39,9 +39,8 @@ interface MusicSource : I18N {
     val collection: CollectionProcessor?
         get() = null
 
-
-    fun configure(config: SourceConfig)
-
+    val configuration: UserConfiguration?
+        get() = null
 }
 
 val MusicSource.hasDiscoveryPage: Boolean

@@ -7,14 +7,17 @@ import io.github.mslxl.ktswing.component.hBox
 import io.github.mslxl.ktswing.component.scrollPane
 import io.github.mslxl.ktswing.group.swing
 import io.github.mslxl.ktswing.layout.borderLayout
-import io.github.mslxl.xmusic.common.config.SourceConfig
+import io.github.mslxl.xmusic.common.config.IConfiguration
+import io.github.mslxl.xmusic.common.config.UserConfiguration
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.desktop.ui.compoent.config.JConfigItemList
 import io.github.mslxl.xmusic.desktop.ui.view.View
 import javax.swing.BorderFactory
 import javax.swing.JComponent
 
-class SourceConfigTabView(val config: SourceConfig, override val parent: View?) : View {
+class SourceConfigTabView(val config: IConfiguration, override val parent: View?) : View {
+    constructor(userConfiguration: UserConfiguration, parent: View?) : this(userConfiguration.configuration, parent)
+
     companion object {
         val logger = SourceConfigTabView::class.logger
     }

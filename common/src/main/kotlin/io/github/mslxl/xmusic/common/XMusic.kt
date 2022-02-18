@@ -1,17 +1,14 @@
 package io.github.mslxl.xmusic.common
 
 import io.github.mslxl.xmusic.common.addon.MusicSource
-import io.github.mslxl.xmusic.common.addon.SourceID
-import io.github.mslxl.xmusic.common.config.SourceConfig
-import io.github.mslxl.xmusic.common.config.XMusicConfig
 import io.github.mslxl.xmusic.common.events.XMusicInitializationEvent
 import io.github.mslxl.xmusic.common.events.XMusicPostinitializationEvent
 import io.github.mslxl.xmusic.common.events.XMusicPreinitializationEvent
-import io.github.mslxl.xmusic.common.fs.CacheIndexDBManager
-import io.github.mslxl.xmusic.common.fs.FileSystem
 import io.github.mslxl.xmusic.common.i18n.I18NStorage
 import io.github.mslxl.xmusic.common.manager.AddonsMan
 import io.github.mslxl.xmusic.common.net.NetworkHandle
+import io.github.mslxl.xmusic.common.platform.CacheIndexDBManager
+import io.github.mslxl.xmusic.common.platform.FileSystemEnv
 import io.github.mslxl.xmusic.common.player.PlayerBinding
 import io.github.mslxl.xmusic.common.player.VirtualPlaylist
 import io.github.mslxl.xmusic.common.src.SourceLocalMusic
@@ -20,13 +17,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class XMusic(
-        val fs: FileSystem,
+        val fs: FileSystemEnv,
         val controller: PlayerBinding,
         val cacheManager: CacheIndexDBManager
 ) {
     val playlist = VirtualPlaylist()
     val network = NetworkHandle(this)
-    val coreConfig = XMusicConfig(fs)
     val i18n = I18NStorage(this)
 
     init {
@@ -60,15 +56,12 @@ class XMusic(
         AddonsMan.sentEvent(XMusicPostinitializationEvent(this))
     }
 
-    private val config: HashMap<SourceID, SourceConfig> = hashMapOf()
-
-    fun getCfg(id: SourceID) = config[id]!!
 
     companion object {
         const val appID = "io.github.mslxl.xmusic"
         const val version = "0.0.1-alpha"
 
         //TODO add more ext
-        val acceptExt = listOf("mp3", "mp4", "m4a", "m4s")
+        val acceptExt = listOf("mp3", "mp4", "m4a", "m4s", "wav")
     }
 }

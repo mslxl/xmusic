@@ -1,7 +1,7 @@
 package io.github.mslxl.xmusic.desktop.player
 
 import io.github.mslxl.xmusic.common.XMusic
-import io.github.mslxl.xmusic.common.entity.EntitySong
+import io.github.mslxl.xmusic.common.addon.entity.EntitySong
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.player.PlayerBinding
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory

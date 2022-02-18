@@ -1,7 +1,7 @@
 package io.github.mslxl.xmusic.common.util
 
-import io.github.mslxl.xmusic.common.fs.CacheIndexDBManager
 import io.github.mslxl.xmusic.common.logger
+import io.github.mslxl.xmusic.common.platform.CacheIndexDBManager
 import java.io.File
 
 object MusicUtils {
@@ -77,7 +77,6 @@ object MusicUtils {
                             logger.info("MIME: $mime")
 
                             val pictureType = it.read(1).asByteDec()
-                            //TODO use correct picture instead of first picture, it need I to find a special mp3 file to complete it
 
                             val desc = it.readUntil(1) { ahead ->
                                 ahead.asByteDec() != 0x00

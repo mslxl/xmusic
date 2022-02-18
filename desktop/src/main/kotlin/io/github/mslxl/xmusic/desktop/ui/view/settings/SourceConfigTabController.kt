@@ -7,15 +7,15 @@ class SourceConfigTabController(private val view: SourceConfigTabView) {
         val logger = SourceConfigTabController::class.logger
     }
 
-    var trans = view.config.transact()
+    var trans = view.config.journal()
     fun commit() {
-        logger.info("${view.config.id} config commit")
+        logger.info("journal ${view.config.id} config commit")
         trans.commit()
     }
 
     fun cancel() {
+        trans.trash()
         logger.info("Trash modified config")
-        trans = view.config.transact()
         view.configComponentList.reload(trans)
     }
 }

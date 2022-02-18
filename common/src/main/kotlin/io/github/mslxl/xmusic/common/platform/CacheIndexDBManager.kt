@@ -1,4 +1,4 @@
-package io.github.mslxl.xmusic.common.fs
+package io.github.mslxl.xmusic.common.platform
 
 import java.io.File
 

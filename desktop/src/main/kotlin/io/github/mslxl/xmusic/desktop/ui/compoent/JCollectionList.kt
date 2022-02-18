@@ -1,9 +1,9 @@
 package io.github.mslxl.xmusic.desktop.ui.compoent
 
-import io.github.mslxl.xmusic.common.entity.EntityCollection
-import io.github.mslxl.xmusic.common.entity.EntityCollectionIndex
+import io.github.mslxl.xmusic.common.addon.entity.EntityCollection
+import io.github.mslxl.xmusic.common.addon.entity.EntityCollectionIndex
+import io.github.mslxl.xmusic.common.addon.processor.CollectionProcessor
 import io.github.mslxl.xmusic.common.logger
-import io.github.mslxl.xmusic.common.source.processor.CollectionProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job

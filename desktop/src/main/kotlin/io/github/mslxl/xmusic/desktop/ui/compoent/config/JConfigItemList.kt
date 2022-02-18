@@ -1,7 +1,6 @@
 package io.github.mslxl.xmusic.desktop.ui.compoent.config
 
-import io.github.mslxl.xmusic.common.config.SourceConfig
-import io.github.mslxl.xmusic.common.config.SourceConfigTran
+import io.github.mslxl.xmusic.common.config.ConfigurationJournal
 import io.github.mslxl.xmusic.common.logger
 import java.awt.Component
 import java.util.*
@@ -11,7 +10,7 @@ import javax.swing.table.DefaultTableModel
 import javax.swing.table.TableCellEditor
 import javax.swing.table.TableCellRenderer
 
-class JConfigItemList(private var trans: SourceConfigTran) : JTable() {
+class JConfigItemList(private var journal: ConfigurationJournal) : JTable() {
     companion object {
         private val logger = JConfigItemList::class.logger
     }
@@ -20,13 +19,13 @@ class JConfigItemList(private var trans: SourceConfigTran) : JTable() {
     private lateinit var itemModel: DefaultTableModel
 
     init {
-        reload(trans)
+        reload(journal)
     }
 
 
     private val renderer = TableCellRenderer { _, value, _, _, _, _ ->
-        val value = value as SourceConfig.ItemIndex
-        controllerBuilder.getController(trans, value).getComponent()
+        val key = value as String
+        controllerBuilder.getController(journal, key).getComponent()
     }
     private val editor = object : TableCellEditor {
 
@@ -54,15 +53,15 @@ class JConfigItemList(private var trans: SourceConfigTran) : JTable() {
         }
 
         override fun getTableCellEditorComponent(
-            table: JTable?,
-            value: Any?,
-            isSelected: Boolean,
-            row: Int,
-            column: Int
+                table: JTable?,
+                value: Any?,
+                isSelected: Boolean,
+                row: Int,
+                column: Int
         ): Component {
-            val value = value as SourceConfig.ItemIndex
-            return controllerBuilder.getController(trans, value)
-                .getComponent()
+            val key = value as String
+            return controllerBuilder.getController(journal, key)
+                    .getComponent()
         }
     }
 
@@ -75,15 +74,18 @@ class JConfigItemList(private var trans: SourceConfigTran) : JTable() {
         this.setCellEditor(editor)
     }
 
-    fun reload(trans: SourceConfigTran) {
+    fun reload(journal: ConfigurationJournal) {
         logger.info("Reload config")
-        this.trans = trans
+        this.journal = journal
         itemModel = DefaultTableModel().apply {
             addColumn("")
         }
-        trans.listAllMarks().forEach {
-            itemModel.addRow(arrayOf(it.value))
+
+        journal.exposedKey.keys.forEach {
+            itemModel.addRow(arrayOf(it))
         }
+
+
         this.model = itemModel
     }
 }
