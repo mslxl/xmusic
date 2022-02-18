@@ -1,7 +1,8 @@
-package io.github.mslxl.xmusic.desktop.ui.compoent.config
+package io.github.mslxl.xmusic.desktop.ui.compoent
 
 import io.github.mslxl.xmusic.common.config.ConfigurationJournal
 import io.github.mslxl.xmusic.common.logger
+import io.github.mslxl.xmusic.desktop.ui.compoent.config.ControllerBuilder
 import java.awt.Component
 import java.util.*
 import javax.swing.JTable

@@ -10,7 +10,7 @@ import io.github.mslxl.ktswing.layout.borderLayout
 import io.github.mslxl.xmusic.common.config.IConfiguration
 import io.github.mslxl.xmusic.common.config.UserConfiguration
 import io.github.mslxl.xmusic.common.logger
-import io.github.mslxl.xmusic.desktop.ui.compoent.config.JConfigItemList
+import io.github.mslxl.xmusic.desktop.ui.compoent.JConfigItemList
 import io.github.mslxl.xmusic.desktop.ui.view.View
 import javax.swing.BorderFactory
 import javax.swing.JComponent

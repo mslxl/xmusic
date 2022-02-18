@@ -17,8 +17,8 @@ class Configuration internal constructor(
     internal val properties = Properties()
 
     init {
-        if (!file.exists()){
-            if(!file.parentFile.exists()){
+        if (!file.exists()) {
+            if (!file.parentFile.exists()) {
                 file.parentFile.mkdirs()
             }
             file.createNewFile()
@@ -30,7 +30,10 @@ class Configuration internal constructor(
     }
 
     override fun get(key: String): Any? {
-        return properties[key]
+        return if (properties.containsKey(key))
+            properties[key]
+        else
+            exposedDefaultValue[key]
     }
 
     inline fun <T> get(key: String, default: () -> T): T {

@@ -45,7 +45,7 @@ class PwdController : ConfigItemComponentController, FocusListener {
         this.journal = journal
         this.key = key
         label.text = key
-        textField.text = journal.exposedDefaultValue[key]?.toString() ?: ""
+        textField.text = journal.get(key)?.toString() ?: ""
         pan.updateUI()
     }
 
