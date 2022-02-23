@@ -9,6 +9,7 @@ import io.github.mslxl.xmusic.common.addon.entity.EntitySong
 import io.github.mslxl.xmusic.common.addon.entity.EntitySongIndex
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.player.VirtualPlaylist
+import io.github.mslxl.xmusic.common.util.MusicUtils
 import io.github.mslxl.xmusic.desktop.ui.util.scale
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
@@ -30,7 +31,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
         override fun getRowCount(): Int = data.size
 
         override fun getColumnName(column: Int): String =
-            listOf("Cover", "Name", "Singer")[column]
+                listOf("Cover", "Name", "Singer")[column]
 
 
         override fun getColumnCount(): Int = 3
@@ -133,7 +134,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
 
         // set default renderer to show different field
         tableComponent.setDefaultRenderer(
-            Any::class.java
+                Any::class.java
         ) { _, value, isSelected, _, row, column ->
             val value = value as EntitySong
             val comp = when (column) {
@@ -143,7 +144,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
                             val size = tableComponent.rowHeight
                             preferredSize = Dimension(size, size)
                             self.icon =
-                                ImageIcon(value.cover).scale(size, size)
+                                    ImageIcon(value.cover ?: MusicUtils.defaultCover.toURI().toURL()).scale(size, size)
                         }
                     }
                 }
