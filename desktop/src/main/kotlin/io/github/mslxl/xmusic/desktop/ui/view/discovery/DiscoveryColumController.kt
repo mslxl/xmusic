@@ -1,10 +1,12 @@
 package io.github.mslxl.xmusic.desktop.ui.view.discovery
 
+import io.github.mslxl.xmusic.common.addon.entity.EntityCollection
 import io.github.mslxl.xmusic.common.addon.entity.EntitySong
 import io.github.mslxl.xmusic.common.addon.processor.ExplorableEntity
 import io.github.mslxl.xmusic.common.addon.processor.ExplorableIndex
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.util.SequenceList
+import io.github.mslxl.xmusic.desktop.ui.view.explorer.ExplorerCollectionView
 import io.github.mslxl.xmusic.desktop.ui.view.findParent
 import io.github.mslxl.xmusic.desktop.ui.view.root.RootView
 import io.github.mslxl.xmusic.desktop.ui.view.songdetail.SongDetailView
@@ -47,7 +49,6 @@ class DiscoveryColumController<T : ExplorableIndex<E>, E : ExplorableEntity>(pri
         }
     }
 
-
     fun fireLoad() {
         fun fire() {
             logger.info("start load")
@@ -67,6 +68,7 @@ class DiscoveryColumController<T : ExplorableIndex<E>, E : ExplorableEntity>(pri
         val root = view.findParent<RootView>()!!
         val view = when (song) {
             is EntitySong -> SongDetailView(root, song)
+            is EntityCollection -> ExplorerCollectionView(root, song)
             else -> error("Unrecognised explorable entity $song")
         }
         root.pushView(view)
