@@ -1,10 +1,8 @@
 import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.addon.MusicSource
 import io.github.mslxl.xmusic.common.addon.XMusicEventRegister
-import io.github.mslxl.xmusic.common.addon.entity.EntityCollection
-import io.github.mslxl.xmusic.common.addon.entity.EntityCollectionIndex
-import io.github.mslxl.xmusic.common.addon.entity.EntitySong
-import io.github.mslxl.xmusic.common.addon.entity.EntitySongIndex
+import io.github.mslxl.xmusic.common.addon.entity.*
+import io.github.mslxl.xmusic.common.addon.processor.AlbumProcessor
 import io.github.mslxl.xmusic.common.addon.processor.CollectionProcessor
 import io.github.mslxl.xmusic.common.addon.processor.ExplorerProcessor
 import io.github.mslxl.xmusic.common.addon.processor.SongProcessor
@@ -37,15 +35,55 @@ class FakeMusicSource : MusicSource {
     }, "en" to {
         listOf("fake music source" to "Test Source (JVM)")
     })
-    override val discovery: Map<I18NKey, ExplorerProcessor<*, *>> = mapOf("Test single 1" to FakeSongExplorer(this), "Test collection 1" to FakeCollectionExplorer(this))
+    override val discovery: Map<I18NKey, ExplorerProcessor<*, *>> = mapOf(
+            "Test single 1" to FakeSongExplorer(this),
+            "Test collection 1" to FakeCollectionExplorer(this),
+            "Test album 1" to FakeSourceAlbumExplorer(this)
+    )
     override val collection: CollectionProcessor = FakeSourceCollectionProcessor()
+    override val album: AlbumProcessor = FakeSourceAlbumProcessor(this)
 
     @XMusicEventRegister
     fun init(event: XMusicInitializationEvent) {
         core = event.source
         core.i18n.insert(this)
     }
+}
 
+class FakeSourceAlbumProcessor(private val src: FakeMusicSource) : AlbumProcessor {
+    override suspend fun getContent(entityAlbumIndex: EntityAlbumIndex): Sequence<EntitySongIndex> {
+        return createFakeData()
+    }
+
+    override suspend fun getInformation(entityAlbumIndex: EntityAlbumIndex): EntityAlbum {
+        return EntityAlbum(entityAlbumIndex,
+                "name: ${entityAlbumIndex.uuid}", "fake data created by xmusic", "fake data generator")
+    }
+}
+
+class FakeSourceAlbumExplorer(private val src: MusicSource) : ExplorerProcessor<EntityAlbumIndex, EntityAlbum> {
+    override suspend fun getExploredList(): Sequence<EntityAlbumIndex> {
+        return sequence {
+            repeat(10) {
+                yield(EntityAlbumIndex(
+                        id = Random.nextInt(1000, 9999).toString(),
+                        sourceID = src.id
+                ))
+            }
+        }
+    }
+
+    override suspend fun getExploredDetail(index: EntityAlbumIndex): Sequence<EntityAlbum> {
+        return sequence {
+            yield(EntityAlbum(
+                    index = index,
+                    name = "test: ${index.uuid}",
+                    desc = "desc",
+                    creator = "create"
+            ))
+        }
+
+    }
 }
 
 class FakeSourceCollectionProcessor : CollectionProcessor {
@@ -105,7 +143,6 @@ class FakeSongProcessor(private val src: FakeMusicSource) : SongProcessor, Searc
         return createFakeData()
     }
 }
-
 
 fun main() {
     AddonsMan.register(FakeMusicSource::class)

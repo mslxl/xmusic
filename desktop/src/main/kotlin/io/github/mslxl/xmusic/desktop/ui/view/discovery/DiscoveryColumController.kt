@@ -1,11 +1,13 @@
 package io.github.mslxl.xmusic.desktop.ui.view.discovery
 
+import io.github.mslxl.xmusic.common.addon.entity.EntityAlbum
 import io.github.mslxl.xmusic.common.addon.entity.EntityCollection
 import io.github.mslxl.xmusic.common.addon.entity.EntitySong
 import io.github.mslxl.xmusic.common.addon.processor.ExplorableEntity
 import io.github.mslxl.xmusic.common.addon.processor.ExplorableIndex
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.util.SequenceList
+import io.github.mslxl.xmusic.desktop.ui.view.explorer.ExplorerAlbumView
 import io.github.mslxl.xmusic.desktop.ui.view.explorer.ExplorerCollectionView
 import io.github.mslxl.xmusic.desktop.ui.view.findParent
 import io.github.mslxl.xmusic.desktop.ui.view.root.RootView
@@ -63,13 +65,14 @@ class DiscoveryColumController<T : ExplorableIndex<E>, E : ExplorableEntity>(pri
         }
     }
 
-    fun openDetail(song: ExplorableEntity) {
-        logger.info("open detail $song from discovery")
+    fun openDetail(item: ExplorableEntity) {
+        logger.info("open detail $item from discovery")
         val root = view.findParent<RootView>()!!
-        val view = when (song) {
-            is EntitySong -> SongDetailView(root, song)
-            is EntityCollection -> ExplorerCollectionView(root, song)
-            else -> error("Unrecognised explorable entity $song")
+        val view = when (item) {
+            is EntitySong -> SongDetailView(root, item)
+            is EntityCollection -> ExplorerCollectionView(root, item)
+            is EntityAlbum -> ExplorerAlbumView(root, item)
+            else -> error("Unrecognised explorable entity $item")
         }
         root.pushView(view)
     }
