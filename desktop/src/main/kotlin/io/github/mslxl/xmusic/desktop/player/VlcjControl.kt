@@ -4,6 +4,7 @@ import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.addon.entity.EntitySong
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.player.PlayerBinding
+import io.github.mslxl.xmusic.desktop.config.DesktopConfig
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory
 import uk.co.caprica.vlcj.media.Media
 import uk.co.caprica.vlcj.media.MediaEventAdapter
@@ -157,10 +158,18 @@ object VlcjControl : PlayerBinding {
         })
     }
 
-    var volume: Int
+    override var volume: Int
         get() = player.audio().volume()
         set(value) {
+            DesktopConfig.volume = value
             player.audio().setVolume(value)
+        }
+
+    override var isMute: Boolean
+        get() = player.audio().isMute
+        set(value) {
+            DesktopConfig.mute = value
+            player.audio().isMute = value
         }
 
     fun setPlaytime(position: Long) {
@@ -177,6 +186,11 @@ object VlcjControl : PlayerBinding {
         player.audio().let {
             it.isMute = !it.isMute
         }
+    }
+
+    init {
+        volume = DesktopConfig.volume
+        player.audio().isMute = DesktopConfig.mute
     }
 
     fun addMuteListener(listener: (isMute: Boolean) -> Unit) {

@@ -102,7 +102,7 @@ class PlayBarView(override val parent: View?) : View {
                     self.value = progress.toInt()
 
                     self.toolTipText =
-                        "${progress / (60 * 60 * 60)}:${progress / (60 * 60)}/${totalLength / (60 * 60 * 60)}:${totalLength / (60 * 60)}"
+                            "${progress / (60 * 60 * 60)}:${progress / (60 * 60)}/${totalLength / (60 * 60 * 60)}:${totalLength / (60 * 60)}"
                 }
             }
             self.addMouseListener(object : MouseAdapter() {
@@ -179,6 +179,7 @@ class PlayBarView(override val parent: View?) : View {
             self.addActionListener {
                 VlcjControl.toggleMute()
             }
+            self.text = if (VlcjControl.isMute) CHAR_VOLUME_OFF else CHAR_VOLUME_ON
             VlcjControl.addMuteListener { isMute ->
                 self.text = if (isMute) CHAR_VOLUME_OFF else CHAR_VOLUME_ON
             }
@@ -257,11 +258,11 @@ class PlayBarView(override val parent: View?) : View {
         val listRenderer = object : ListCellRenderer<EntitySong> {
             val playlist = App.core.playlist
             override fun getListCellRendererComponent(
-                list: JList<out EntitySong>?,
-                value: EntitySong?,
-                index: Int,
-                isSelected: Boolean,
-                cellHasFocus: Boolean
+                    list: JList<out EntitySong>?,
+                    value: EntitySong?,
+                    index: Int,
+                    isSelected: Boolean,
+                    cellHasFocus: Boolean
             ) = swing<JComponent> {
                 panel {
                     attr {
@@ -290,7 +291,7 @@ class PlayBarView(override val parent: View?) : View {
             panel {
                 attr {
                     border = BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(Color.GRAY), BorderFactory.createEmptyBorder(15, 15, 10, 15)
+                            BorderFactory.createLineBorder(Color.GRAY), BorderFactory.createEmptyBorder(15, 15, 10, 15)
                     )
                     preferredSize = Dimension(300, 400)
                 }

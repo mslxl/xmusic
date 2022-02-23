@@ -11,9 +11,18 @@ class UserConfigurationProxyAdapter(configuration: Configuration) : InvocationHa
     }
 
     fun getItem(method: Method): Any? {
-        val name = method.name.substring(3).let {
-            it.first().lowercaseChar() + it.drop(1)
+        val name = if (method.name.startsWith("get")) {
+            method.name.substring(3).let {
+                it.first().lowercaseChar() + it.drop(1)
+            }
+        } else if (method.name.startsWith("is")) {
+            method.name.substring(2).let {
+                it.first().lowercaseChar() + it.drop(1)
+            }
+        } else {
+            error("Unknown function ${method.name}")
         }
+
         val v = journal.get(name) {
             journal.exposedDefaultValue[name]
         }
@@ -38,7 +47,7 @@ class UserConfigurationProxyAdapter(configuration: Configuration) : InvocationHa
     override fun invoke(proxy: Any, method: Method, args: Array<out Any>?): Any? {
         return if (method.name == "getConfiguration") {
             return journal
-        } else if (method.name.startsWith("get")) {
+        } else if (method.name.startsWith("get") || method.name.startsWith("is")) {
             getItem(method)
         } else if (method.name.startsWith("set")) {
             setItem(method, args!![0])

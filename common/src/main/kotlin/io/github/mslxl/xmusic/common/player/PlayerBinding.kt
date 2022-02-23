@@ -7,4 +7,7 @@ interface PlayerBinding {
     fun play(file: File, info: EntitySong)
     fun stop()
     fun watchPlayEnd(watcher: () -> Unit)
+
+    var volume: Int
+    var isMute: Boolean
 }
