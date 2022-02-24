@@ -11,6 +11,7 @@ import io.github.mslxl.xmusic.common.addon.MusicSource
 import io.github.mslxl.xmusic.common.addon.entity.EntitySong
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.manager.AddonsMan
+import io.github.mslxl.xmusic.common.net.NetworkHandle
 import io.github.mslxl.xmusic.common.player.VirtualPlaylist
 import io.github.mslxl.xmusic.common.util.MusicUtils
 import io.github.mslxl.xmusic.desktop.App
@@ -135,8 +136,10 @@ class PlayBarView(override val parent: View?) : View {
             self.icon = ImageIcon(MusicUtils.defaultCover.toURI().toURL()).scalaImageIcon(64)
             VlcjControl.addPlayInfoListener { info, _ ->
                 // Download image and show it
+                val src = AddonsMan.getInstance<MusicSource>(info.index.source)!!
+                val network = NetworkHandle.require(src)
                 val coverFile = info.cover?.let { url ->
-                    App.core.network.download(AddonsMan.getInstance<MusicSource>(info.index.source)!!, url, true)
+                    network.download(url, true)
                 } ?: MusicUtils.defaultCover
                 self.icon = ImageIcon(coverFile.inputStream().readBytes()).scalaImageIcon(64)
             }

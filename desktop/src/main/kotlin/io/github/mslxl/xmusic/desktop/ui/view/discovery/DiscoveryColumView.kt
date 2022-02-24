@@ -11,8 +11,8 @@ import io.github.mslxl.xmusic.common.addon.processor.ExplorableEntity
 import io.github.mslxl.xmusic.common.addon.processor.ExplorableIndex
 import io.github.mslxl.xmusic.common.addon.processor.ExplorerProcessor
 import io.github.mslxl.xmusic.common.i18n.I18NKey
+import io.github.mslxl.xmusic.common.net.NetworkHandle
 import io.github.mslxl.xmusic.common.util.MusicUtils
-import io.github.mslxl.xmusic.desktop.App
 import io.github.mslxl.xmusic.desktop.ui.util.scale
 import io.github.mslxl.xmusic.desktop.ui.view.View
 import java.awt.Component
@@ -27,7 +27,9 @@ class DiscoveryColumView<T : ExplorableIndex<E>, E : ExplorableEntity>(
         val musicSource: MusicSource,
         override val parent: View
 ) :
-    View {
+        View {
+
+    val network = NetworkHandle.require(musicSource)
     val scrollPane: JScrollPane
     val list: JList<ExplorableEntity>
 
@@ -37,14 +39,14 @@ class DiscoveryColumView<T : ExplorableIndex<E>, E : ExplorableEntity>(
         }
 
         override fun getListCellRendererComponent(
-            list: JList<out ExplorableEntity>?,
-            value: ExplorableEntity?,
-            index: Int,
-            isSelected: Boolean,
-            cellHasFocus: Boolean
+                list: JList<out ExplorableEntity>?,
+                value: ExplorableEntity?,
+                index: Int,
+                isSelected: Boolean,
+                cellHasFocus: Boolean
         ): Component {
             val img = value?.cover?.let { url ->
-                App.core.network.download(musicSource, url, true)
+                network.download( url, true)
             } ?: MusicUtils.defaultCover
             label.icon = ImageIcon(img.toURI().toURL()).scale(128, 128)
             return label
@@ -56,8 +58,8 @@ class DiscoveryColumView<T : ExplorableIndex<E>, E : ExplorableEntity>(
         panel {
             attr {
                 border = BorderFactory.createCompoundBorder(
-                    BorderFactory.createEmptyBorder(10, 10, 10, 10),
-                    BorderFactory.createTitledBorder(i18nKey)
+                        BorderFactory.createEmptyBorder(10, 10, 10, 10),
+                        BorderFactory.createTitledBorder(i18nKey)
                 )
             }
             borderLayoutCenter {

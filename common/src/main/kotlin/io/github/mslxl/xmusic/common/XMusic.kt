@@ -22,7 +22,6 @@ class XMusic(
         val cacheManager: CacheIndexDBManager
 ) {
     val playlist = VirtualPlaylist()
-    val network = NetworkHandle(this)
     val i18n = I18NStorage(this)
 
     init {
@@ -36,8 +35,9 @@ class XMusic(
                 val src = AddonsMan.getInstance<MusicSource>(srcId)!!
                 GlobalScope.launch(Dispatchers.IO) {
                     //TODO use option
+                    val network = NetworkHandle.require(src.id)
                     val url = src.information.getURL(info, src.information.getOption(info).first())
-                    val file = network.download(src, url)
+                    val file = network.download( url)
                     controller.play(file, info)
                 }
             }

@@ -32,10 +32,11 @@ class SourceLocalMusic() : MusicSource {
 
     companion object {
         private val logger = SourceLocalMusic::class.logger
+        const val id = "io.github.mslxl.xmusic.common.localmusic"
     }
 
     override val name: String = "localmusic.name"
-    override val id: SourceID = "io.github.mslxl.xmusic.common.localmusic"
+    override val id: SourceID = SourceLocalMusic.id
 
     override val i18n: Map<I18NLocalCode, () -> List<Pair<I18NKey, String>>> = mapOf(
             "zh_CN" to {

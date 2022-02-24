@@ -139,13 +139,18 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
             val value = value as EntitySong
             val comp = when (column) {
                 0 -> swing {
-                    imageLabel {
-                        attr {
-                            val size = tableComponent.rowHeight
-                            preferredSize = Dimension(size, size)
-                            self.icon =
-                                    ImageIcon(value.cover ?: MusicUtils.defaultCover.toURI().toURL()).scale(size, size)
+                    hBox {
+                        glue
+                        imageLabel {
+                            attr {
+                                val size = tableComponent.rowHeight
+                                preferredSize = Dimension(size, size)
+                                self.icon =
+                                        ImageIcon(value.cover
+                                                ?: MusicUtils.defaultCover.toURI().toURL()).scale(size, size)
+                            }
                         }
+                        glue
                     }
                 }
                 1 -> swing<JComponent> {
