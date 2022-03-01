@@ -6,14 +6,15 @@ import io.github.mslxl.xmusic.common.addon.entity.EntitySong
 import io.github.mslxl.xmusic.common.addon.processor.ExplorableEntity
 import io.github.mslxl.xmusic.common.addon.processor.ExplorableIndex
 import io.github.mslxl.xmusic.common.logger
-import io.github.mslxl.xmusic.common.util.SequenceList
+import io.github.mslxl.xmusic.common.util.ChannelListAppender
 import io.github.mslxl.xmusic.desktop.ui.view.explorer.ExplorerAlbumView
 import io.github.mslxl.xmusic.desktop.ui.view.explorer.ExplorerCollectionView
 import io.github.mslxl.xmusic.desktop.ui.view.findParent
 import io.github.mslxl.xmusic.desktop.ui.view.root.RootView
 import io.github.mslxl.xmusic.desktop.ui.view.songdetail.SongDetailView
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.launch
 import javax.swing.DefaultListModel
 
@@ -22,8 +23,10 @@ class DiscoveryColumController<T : ExplorableIndex<E>, E : ExplorableEntity>(pri
         private val logger = DiscoveryColumController::class.logger
     }
 
-    private var indexList: SequenceList<T>? = null
+    private var listAppender: ChannelListAppender<T>? = null
     private val listModel = DefaultListModel<ExplorableEntity>()
+
+    private var pauseLoad = false
 
 
     init {
@@ -32,7 +35,8 @@ class DiscoveryColumController<T : ExplorableIndex<E>, E : ExplorableEntity>(pri
             with(view.scrollPane.horizontalScrollBar) {
                 val offset = visibleAmount
                 val percentage = (it.value.toDouble() + offset) / maximum
-                if (percentage > 0.8) {
+                if (percentage > 0.9) {
+                    logger.info("scrollbar approach bottom(percentage $percentage), trigger load")
                     fireLoad()
                 }
             }
@@ -40,28 +44,44 @@ class DiscoveryColumController<T : ExplorableIndex<E>, E : ExplorableEntity>(pri
         view.list.model = listModel
     }
 
-    private fun createIndexList(after: suspend () -> Unit) {
-        GlobalScope.launch(Dispatchers.IO) {
-            logger.info("create explore index lazy list")
-            indexList = SequenceList(arrayListOf(), view.processor.getExploredList(), Dispatchers.IO)
-            indexList!!.addLoadSuccessListener {
-                view.processor.getExploredDetail(it).forEach(listModel::addElement)
+    private fun createIndexLoader(after: suspend () -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch() {
+            logger.info("create explore index loader")
+
+            listAppender = ChannelListAppender({
+                val details = view.processor.getExploredDetail(it)
+                while (!details.isClosedForReceive) {
+                    try {
+                        val elem = details.receive()
+                        listModel.addElement(elem)
+                    } catch (_: ClosedReceiveChannelException) {
+                    }
+                }
+            }, view.processor.getExploredList(), Dispatchers.IO).apply {
+                addLoadSuccessListener {
+                    pauseLoad = false
+                }
             }
+
             after.invoke()
         }
     }
 
     fun fireLoad() {
-        fun fire() {
-            logger.info("start load")
-            indexList!!.load(10)
-        }
-        if (indexList == null) {
-            createIndexList {
+        if (!pauseLoad) {
+            fun fire() {
+                pauseLoad = true
+                listAppender!!.load(10)
+            }
+            if (listAppender == null) {
+                createIndexLoader {
+                    fire()
+                }
+            } else {
                 fire()
             }
         } else {
-            fire()
+            logger.info("load was paused by last task")
         }
     }
 

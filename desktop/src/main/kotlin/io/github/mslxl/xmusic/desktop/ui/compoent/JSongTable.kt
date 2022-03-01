@@ -8,11 +8,15 @@ import io.github.mslxl.xmusic.common.addon.MusicSource
 import io.github.mslxl.xmusic.common.addon.entity.EntitySong
 import io.github.mslxl.xmusic.common.addon.entity.EntitySongIndex
 import io.github.mslxl.xmusic.common.logger
+import io.github.mslxl.xmusic.common.manager.AddonsMan
 import io.github.mslxl.xmusic.common.player.VirtualPlaylist
+import io.github.mslxl.xmusic.common.util.ChannelListAppender
 import io.github.mslxl.xmusic.common.util.MusicUtils
 import io.github.mslxl.xmusic.desktop.ui.util.scale
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.swing.Swing
+import kotlinx.coroutines.withContext
 import java.awt.Dimension
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -31,7 +35,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
         override fun getRowCount(): Int = data.size
 
         override fun getColumnName(column: Int): String =
-                listOf("Cover", "Name", "Singer")[column]
+            listOf("Cover", "Name", "Singer")[column]
 
 
         override fun getColumnCount(): Int = 3
@@ -57,10 +61,10 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
 
     val tableComponent = JTable()
     val tableModel = SongTableModel()
+    var pauseLoad = false
 
-    private var sequence: Iterator<EntitySongIndex> = iterator { } // Table will load src from this sequence
-    private var jobLoad: Job? = null // Loading job from coroutine
-    private var isSequenceFin = true // Is there anything remain in sequence
+    var channelListAppender: ChannelListAppender<EntitySongIndex>? = null
+
 
     init {
         setViewportView(tableComponent)
@@ -69,8 +73,9 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
             if (!it.valueIsAdjusting) {
                 val offset = verticalScrollBar.visibleAmount
                 val percentage = (it.value.toDouble() + offset) / verticalScrollBar.maximum
-                if (percentage >= 0.9 && !isSequenceFin) {
-                    fireLoadFromSequence()
+                if (percentage >= 0.9) {
+                    logger.info("scrollbar approach bottom(percentage $percentage), trigger load")
+                    loadMore()
                 }
             }
         }
@@ -134,7 +139,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
 
         // set default renderer to show different field
         tableComponent.setDefaultRenderer(
-                Any::class.java
+            Any::class.java
         ) { _, value, isSelected, _, row, column ->
             val value = value as EntitySong
             val comp = when (column) {
@@ -146,8 +151,10 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
                                 val size = tableComponent.rowHeight
                                 preferredSize = Dimension(size, size)
                                 self.icon =
-                                        ImageIcon(value.cover
-                                                ?: MusicUtils.defaultCover.toURI().toURL()).scale(size, size)
+                                    ImageIcon(
+                                        value.cover
+                                            ?: MusicUtils.defaultCover.toURI().toURL()
+                                    ).scale(size, size)
                             }
                         }
                         glue
@@ -169,38 +176,43 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
 
     }
 
-    /**
-     * start load from [sequence]
-     * it will create a coroutine and then work in IO-worker thread
-     */
-    private fun fireLoadFromSequence() {
-        if (jobLoad == null || jobLoad?.isActive == false) {
-            logger.info("trigger load")
-            jobLoad = GlobalScope.launch(Dispatchers.IO) {
-                var loaded = 0
-                val targetLoad = 20
-                while (loaded < targetLoad && sequence.hasNext()) {
-                    val elem = sequence.next()
-                    val songs = musicSource.information.getDetail(elem)
-                    songs.forEach(tableModel::add)
-                    loaded++
-                }
-                if (!sequence.hasNext()) {
-                    isSequenceFin = true
-                }
-                withContext(Dispatchers.Swing) {
-                    tableModel.fireTableDataChanged()
-                }
+    fun loadMore() {
+        if (pauseLoad) {
+            logger.info("load was paused by last task")
+        } else {
+            pauseLoad = true
+            channelListAppender?.load(10)
+        }
+    }
+
+    private suspend fun appendEntitySongFromIndex(index: EntitySongIndex) {
+        withContext(Dispatchers.IO) {
+            val source = AddonsMan.getInstance<MusicSource>(index.source)!!
+            val songs = source.information.getDetail(index)
+            withContext(Dispatchers.Swing) {
+                songs.forEach(tableModel::add)
+                tableModel.fireTableDataChanged()
             }
         }
     }
 
-    fun setDataSource(data: Sequence<EntitySongIndex>) {
+    fun setDataSource(data: ReceiveChannel<EntitySongIndex>) {
+        pauseLoad = false
         logger.info("data source changed")
-        sequence = data.iterator()
-        isSequenceFin = false
+        channelListAppender = ChannelListAppender(this::appendEntitySongFromIndex, data, Dispatchers.IO)
+        channelListAppender!!.addLoadSuccessListener {
+            withContext(Dispatchers.Swing) {
+                pauseLoad = false
+//                tableModel.fireTableDataChanged()
+                // to make sure the scroll bar appear in time, the table must be updated first
+                if (!verticalScrollBar.isVisible) {
+                    logger.info("continue load more to fill the page")
+                    loadMore()
+                }
+            }
+        }
         tableComponent.clearSelection()
         tableModel.clear()
-        fireLoadFromSequence()
+        loadMore()
     }
 }

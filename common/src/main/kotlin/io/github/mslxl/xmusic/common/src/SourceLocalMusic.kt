@@ -17,10 +17,12 @@ import io.github.mslxl.xmusic.common.i18n.I18NLocalCode
 import io.github.mslxl.xmusic.common.i18n.i18n
 import io.github.mslxl.xmusic.common.logger
 import io.github.mslxl.xmusic.common.util.MusicUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.produce
 import java.io.File
 import java.net.URL
+import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -39,18 +41,18 @@ class SourceLocalMusic() : MusicSource {
     override val id: SourceID = SourceLocalMusic.id
 
     override val i18n: Map<I18NLocalCode, () -> List<Pair<I18NKey, String>>> = mapOf(
-            "zh_CN" to {
-                listOf(
-                        "localmusic.name" to "本地音乐",
-                        "localmusic.item.uncatalogued" to "未分类"
-                )
-            },
-            "en" to {
-                listOf(
-                        "localmusic.name" to "Local Music",
-                        "localmusic.item.uncatalogued" to "Uncatalogued"
-                )
-            })
+        "zh_CN" to {
+            listOf(
+                "localmusic.name" to "本地音乐",
+                "localmusic.item.uncatalogued" to "未分类"
+            )
+        },
+        "en" to {
+            listOf(
+                "localmusic.name" to "Local Music",
+                "localmusic.item.uncatalogued" to "Uncatalogued"
+            )
+        })
 
     override val configuration by lazy {
         ConfigurationFactory().buildFrom<SourceLocalMusicConfiguration>(id)
@@ -63,7 +65,7 @@ class SourceLocalMusic() : MusicSource {
     }
 
     override val information = object : SongProcessor {
-        override suspend fun getDetail(entitySongPreview: EntitySongIndex): Sequence<EntitySong> {
+        override suspend fun getDetail(entitySongPreview: EntitySongIndex): List<EntitySong> {
             return suspendCoroutine { continuation ->
                 val file = File(entitySongPreview.id)
                 val name = file.nameWithoutExtension
@@ -76,27 +78,27 @@ class SourceLocalMusic() : MusicSource {
                 if ('-' in name) {
                     val (singer, title) = name.split('-', limit = 2).map(String::trim)
                     continuation.resume(
-                            sequenceOf(
-                                    EntitySong(
-                                            index = entitySongPreview,
-                                            id = entitySongPreview.id,
-                                            title = title,
-                                            singer = singer,
-                                            cover = cover
-                                    )
+                        listOf(
+                            EntitySong(
+                                index = entitySongPreview,
+                                id = entitySongPreview.id,
+                                title = title,
+                                singer = singer,
+                                cover = cover
                             )
+                        )
                     )
                 } else {
                     continuation.resume(
-                            sequenceOf(
-                                    EntitySong(
-                                            index = entitySongPreview,
-                                            id = entitySongPreview.id,
-                                            title = name,
-                                            singer = "Unknown",
-                                            cover = cover
-                                    )
+                        listOf(
+                            EntitySong(
+                                index = entitySongPreview,
+                                id = entitySongPreview.id,
+                                title = name,
+                                singer = "Unknown",
+                                cover = cover
                             )
+                        )
                     )
                 }
             }
@@ -110,11 +112,12 @@ class SourceLocalMusic() : MusicSource {
     override val collection = object : CollectionProcessor {
         val musicCatalog = hashMapOf<String, List<File>>()
 
-        fun listMusicDir(root: File, base: File): Sequence<String> {
+        fun scanMusic(root: File, base: File): Sequence<String> {
             val relPath = base.toRelativeString(root)
             val fileList = arrayListOf<File>()
             musicCatalog[relPath] = fileList
             logger.info("Scanning local music in ${base.absolutePath}")
+
             return sequence {
                 yield(base.toRelativeString(root))
                 base.listFiles { file: File ->
@@ -124,39 +127,39 @@ class SourceLocalMusic() : MusicSource {
                         fileList.add(file)
                         logger.info("Found ${file.nameWithoutExtension} in catalog $relPath")
                     } else {
-                        yieldAll(listMusicDir(root, file))
+                        yieldAll(scanMusic(root, file))
                     }
                 }
             }
+
         }
 
-        override suspend fun getAllCollection(): Sequence<EntityCollectionIndex> {
-            return if (configuration.path == null) {
-                emptySequence()
-            } else {
-                val path = configuration.path
-                val root = File(path)
-                withContext(Dispatchers.IO) {
-                    listMusicDir(root, root).map {
-                        EntityCollectionIndex(it, this@SourceLocalMusic.id)
-                    }
+        override suspend fun getAllCollection(): ReceiveChannel<EntityCollectionIndex> {
+            val path = configuration.path
+            val root = File(path)
+            return CoroutineScope(coroutineContext).produce {
+                scanMusic(root, root).forEach {
+                    send(EntityCollectionIndex(it, this@SourceLocalMusic.id))
                 }
             }
         }
 
         override suspend fun getDetail(entity: EntityCollectionIndex): EntityCollection {
             return EntityCollection(
-                    index = entity,
-                    name = entity.id.ifBlank { "localmusic.item.uncatalogued".i18n(core, this@SourceLocalMusic.id) },
-                    desc = "Local music in folder ${entity.id}",
-                    creator = "Filesystem"
+                index = entity,
+                name = entity.id.ifBlank { "localmusic.item.uncatalogued".i18n(core, this@SourceLocalMusic.id) },
+                desc = "Local music in folder ${entity.id}",
+                creator = "Filesystem"
             )
         }
 
-        override suspend fun getContent(entity: EntityCollectionIndex): Sequence<EntitySongIndex> {
-            return musicCatalog[entity.id]!!.map {
-                EntitySongIndex(it.absolutePath, this@SourceLocalMusic.id)
-            }.asSequence()
+        override suspend fun getContent(entity: EntityCollectionIndex): ReceiveChannel<EntitySongIndex> {
+            return CoroutineScope(coroutineContext).produce {
+                musicCatalog[entity.id]!!.forEach {
+                    send(EntitySongIndex(it.absolutePath, this@SourceLocalMusic.id))
+                }
+            }
+
         }
     }
 }

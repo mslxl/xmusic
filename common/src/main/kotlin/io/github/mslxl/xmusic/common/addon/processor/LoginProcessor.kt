@@ -11,9 +11,9 @@ interface LoginProcessor {
     val supportPwd: Boolean
         get() = false
 
-    suspend fun pwdLogin(username: String, password: String, cap: String? = null): LoginStatus {
-        return LoginStatus.UNSUPPORTED
-    }
+     fun pwdLogin(username: String, password: String, cap: String? = null): LoginStatus {
+         return LoginStatus.UNSUPPORTED
+     }
 
     val supportPhone: Boolean
         get() = false
@@ -25,7 +25,4 @@ interface LoginProcessor {
     suspend fun phoneLogin(num: Int, verifyCode: String, cal: String? = null): LoginStatus {
         return LoginStatus.UNSUPPORTED
     }
-
-    fun preRequest(tag: String)
-    fun postRequest(tag: String)
 }

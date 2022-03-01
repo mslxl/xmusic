@@ -58,6 +58,9 @@ object AddonsMan {
     }
 
     fun <T> getInstance(id: SourceID): T? {
+        if (id !in addons) {
+            error("addon $id not install, but it was required")
+        }
         @Suppress("UNCHECKED_CAST") return addons[id] as? T
     }
 

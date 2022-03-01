@@ -4,10 +4,11 @@ import io.github.mslxl.xmusic.common.addon.entity.EntityCollection
 import io.github.mslxl.xmusic.common.addon.entity.EntityCollectionIndex
 import io.github.mslxl.xmusic.common.addon.processor.CollectionProcessor
 import io.github.mslxl.xmusic.common.logger
+import io.github.mslxl.xmusic.common.util.ChannelListAppender
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.swing.Swing
+import kotlinx.coroutines.withContext
 import java.awt.Component
 import javax.swing.*
 
@@ -34,12 +35,7 @@ class JCollectionList(val collectionProcessor: CollectionProcessor) : JScrollPan
             }
         }
     }
-
-
-    private var isSequenceFin = true
-    private var sequence = iterator<EntityCollectionIndex> { }
-    private var jobLoad: Job? = null // Loading job from coroutine
-
+    var channelListAppender: ChannelListAppender<EntityCollectionIndex>? = null
 
     init {
         setViewportView(listComponent)
@@ -54,7 +50,7 @@ class JCollectionList(val collectionProcessor: CollectionProcessor) : JScrollPan
             if (!it.valueIsAdjusting) {
                 val offset = verticalScrollBar.visibleAmount
                 val percentage = (it.value.toDouble() + offset) / verticalScrollBar.maximum
-                if (percentage >= 0.9 && !isSequenceFin) {
+                if (percentage >= 0.9) {
                     fireLoad()
                 }
             }
@@ -62,37 +58,27 @@ class JCollectionList(val collectionProcessor: CollectionProcessor) : JScrollPan
 
     }
 
-    fun setData(sequence: Sequence<EntityCollectionIndex>) {
+    fun fireLoad() {
+        channelListAppender?.load(10)
+    }
+
+    private suspend fun appendEntityCollectionFromIndex(index: EntityCollectionIndex) {
+        withContext(Dispatchers.IO) {
+            val collection = collectionProcessor.getDetail(index)
+            withContext(Dispatchers.Swing) {
+                listModel.addElement(collection)
+            }
+        }
+    }
+
+    fun setData(channel: ReceiveChannel<EntityCollectionIndex>) {
         logger.info("data source changed")
-        this.sequence = sequence.iterator()
-        isSequenceFin = false
+        channelListAppender = ChannelListAppender(this::appendEntityCollectionFromIndex, channel, Dispatchers.IO)
         listComponent.clearSelection()
         listModel.clear()
         fireLoad()
     }
 
-    /**
-     * start load from [sequence]
-     * it will create a coroutine and then work in IO-worker thread
-     */
-    private fun fireLoad() {
-        if (jobLoad == null || jobLoad?.isActive == false) {
-            logger.info("trigger load")
-            jobLoad = GlobalScope.launch(Dispatchers.IO) {
-                var loaded = 0
-                val targetLoad = 20
-                while (loaded < targetLoad && sequence.hasNext()) {
-                    val elem = sequence.next()
-                    val detail = collectionProcessor.getDetail(elem)
-                    listModel.addElement(detail)
-                    loaded++
-                }
-                if (!sequence.hasNext()) {
-                    isSequenceFin = true
-                }
-            }
-        }
-    }
 
     fun addSelectionChangeListener(listener: (index: Int, EntityCollection?) -> Unit) {
         listComponent.selectionModel.addListSelectionListener {

@@ -16,8 +16,8 @@ import io.github.mslxl.xmusic.desktop.ui.compoent.JSongTable
 import io.github.mslxl.xmusic.desktop.ui.compoent.fvBox
 import io.github.mslxl.xmusic.desktop.ui.util.scale
 import io.github.mslxl.xmusic.desktop.ui.view.View
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.swing.BorderFactory
 import javax.swing.ImageIcon
@@ -28,7 +28,7 @@ class ExplorerAlbumView(override val parent: View?, private val album: EntityAlb
     val list = JSongTable(src, App.core.playlist)
 
     init {
-        GlobalScope.launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch() {
             val indexes = src.album!!.getContent(album.index)
             list.setDataSource(indexes)
         }

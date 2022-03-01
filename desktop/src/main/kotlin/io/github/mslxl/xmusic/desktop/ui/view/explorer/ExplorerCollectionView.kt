@@ -9,8 +9,8 @@ import io.github.mslxl.xmusic.common.manager.AddonsMan
 import io.github.mslxl.xmusic.desktop.App
 import io.github.mslxl.xmusic.desktop.ui.compoent.JSongTable
 import io.github.mslxl.xmusic.desktop.ui.view.View
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.swing.JComponent
 
@@ -21,7 +21,7 @@ class ExplorerCollectionView(override val parent: View?, val entityCollection: E
         panelWith(borderLayoutCenter()) {
             add(list)
         }
-        GlobalScope.launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch() {
             val songIndexes = src.collection!!.getContent(entity = entityCollection.index)
             list.setDataSource(songIndexes)
         }

@@ -12,8 +12,8 @@ import io.github.mslxl.xmusic.common.platform.FileSystemEnv
 import io.github.mslxl.xmusic.common.player.PlayerBinding
 import io.github.mslxl.xmusic.common.player.VirtualPlaylist
 import io.github.mslxl.xmusic.common.src.SourceLocalMusic
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class XMusic(
@@ -33,11 +33,11 @@ class XMusic(
                 controller.stop()
                 val srcId = info.index.source
                 val src = AddonsMan.getInstance<MusicSource>(srcId)!!
-                GlobalScope.launch(Dispatchers.IO) {
+                CoroutineScope(Dispatchers.IO).launch() {
                     //TODO use option
                     val network = NetworkHandle.require(src.id)
                     val url = src.information.getURL(info, src.information.getOption(info).first())
-                    val file = network.download( url)
+                    val file = network.download(url)
                     controller.play(file, info)
                 }
             }

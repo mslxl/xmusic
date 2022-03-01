@@ -1,5 +1,6 @@
 package io.github.mslxl.xmusic.common.addon.processor
 
+import kotlinx.coroutines.channels.ReceiveChannel
 import java.net.URL
 
 /**
@@ -13,6 +14,6 @@ interface ExplorableEntity {
 }
 
 interface ExplorerProcessor<T : ExplorableIndex<E>, E : ExplorableEntity> {
-    suspend fun getExploredList(): Sequence<T>
-    suspend fun getExploredDetail(index: T): Sequence<E>
+    suspend fun getExploredList(): ReceiveChannel<T>
+    suspend fun getExploredDetail(index: T): ReceiveChannel<E>
 }

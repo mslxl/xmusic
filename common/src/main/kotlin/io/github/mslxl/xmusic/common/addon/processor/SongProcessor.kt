@@ -5,7 +5,7 @@ import io.github.mslxl.xmusic.common.addon.entity.EntitySongIndex
 import java.net.URL
 
 interface SongProcessor {
-    suspend fun getDetail(entitySongPreview: EntitySongIndex): Sequence<EntitySong>
+    suspend fun getDetail(entitySongPreview: EntitySongIndex): List<EntitySong>
 
     /**
      * Get download URL of a music part, X-Music will download it later.
