@@ -176,7 +176,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
 
     }
 
-    fun loadMore() {
+    private fun loadMore() {
         if (pauseLoad) {
             logger.info("load was paused by last task")
         } else {
@@ -190,8 +190,9 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
             val source = AddonsMan.getInstance<MusicSource>(index.source)!!
             val songs = source.information.getDetail(index)
             withContext(Dispatchers.Swing) {
+                val start = tableModel.listData.size - 1
                 songs.forEach(tableModel::add)
-                tableModel.fireTableDataChanged()
+                tableModel.fireTableRowsInserted(start, start + songs.size)
             }
         }
     }
@@ -203,7 +204,7 @@ class JSongTable(private val musicSource: MusicSource, val playlist: VirtualPlay
         channelListAppender!!.addLoadSuccessListener {
             withContext(Dispatchers.Swing) {
                 pauseLoad = false
-//                tableModel.fireTableDataChanged()
+                tableModel.fireTableDataChanged()
                 // to make sure the scroll bar appear in time, the table must be updated first
                 if (!verticalScrollBar.isVisible) {
                     logger.info("continue load more to fill the page")

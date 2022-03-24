@@ -22,12 +22,11 @@ import javax.swing.*
 
 
 class DiscoveryColumView<T : ExplorableIndex<E>, E : ExplorableEntity>(
-        val i18nKey: I18NKey,
-        val processor: ExplorerProcessor<T, E>,
-        val musicSource: MusicSource,
-        override val parent: View
-) :
-        View {
+    val i18nKey: I18NKey,
+    val processor: ExplorerProcessor<T, E>,
+    musicSource: MusicSource,
+    override val parent: View
+) : View {
 
     val network = NetworkHandle.require(musicSource)
     val scrollPane: JScrollPane
@@ -39,14 +38,14 @@ class DiscoveryColumView<T : ExplorableIndex<E>, E : ExplorableEntity>(
         }
 
         override fun getListCellRendererComponent(
-                list: JList<out ExplorableEntity>?,
-                value: ExplorableEntity?,
-                index: Int,
-                isSelected: Boolean,
-                cellHasFocus: Boolean
+            list: JList<out ExplorableEntity>?,
+            value: ExplorableEntity?,
+            index: Int,
+            isSelected: Boolean,
+            cellHasFocus: Boolean
         ): Component {
             val img = value?.cover?.let { url ->
-                network.download( url, true)
+                network.download(url, true)
             } ?: MusicUtils.defaultCover
             label.icon = ImageIcon(img.toURI().toURL()).scale(128, 128)
             return label
@@ -58,8 +57,8 @@ class DiscoveryColumView<T : ExplorableIndex<E>, E : ExplorableEntity>(
         panel {
             attr {
                 border = BorderFactory.createCompoundBorder(
-                        BorderFactory.createEmptyBorder(10, 10, 10, 10),
-                        BorderFactory.createTitledBorder(i18nKey)
+                    BorderFactory.createEmptyBorder(10, 10, 10, 10),
+                    BorderFactory.createTitledBorder(i18nKey)
                 )
             }
             borderLayoutCenter {
@@ -84,6 +83,7 @@ class DiscoveryColumView<T : ExplorableIndex<E>, E : ExplorableEntity>(
             }
         }
     }
+
     private val controller = DiscoveryColumController(this).apply {
         fireLoad()
     }

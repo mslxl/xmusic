@@ -16,6 +16,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.swing.Swing
+import kotlinx.coroutines.withContext
 import javax.swing.DefaultListModel
 
 class DiscoveryColumController<T : ExplorableIndex<E>, E : ExplorableEntity>(private val view: DiscoveryColumView<T, E>) {
@@ -48,16 +50,22 @@ class DiscoveryColumController<T : ExplorableIndex<E>, E : ExplorableEntity>(pri
         CoroutineScope(Dispatchers.IO).launch() {
             logger.info("create explore index loader")
 
-            listAppender = ChannelListAppender({
-                val details = view.processor.getExploredDetail(it)
-                while (!details.isClosedForReceive) {
-                    try {
-                        val elem = details.receive()
-                        listModel.addElement(elem)
-                    } catch (_: ClosedReceiveChannelException) {
+            listAppender = ChannelListAppender(
+                appender = {
+                    val details = view.processor.getExploredDetail(it)
+                    while (!details.isClosedForReceive) {
+                        try {
+                            val elem = details.receive()
+                            withContext(Dispatchers.Swing) {
+                                listModel.addElement(elem)
+                            }
+                        } catch (_: ClosedReceiveChannelException) {
+                        }
                     }
-                }
-            }, view.processor.getExploredList(), Dispatchers.IO).apply {
+                },
+                channel = view.processor.getExploredList(),
+                context = Dispatchers.IO
+            ).apply {
                 addLoadSuccessListener {
                     pauseLoad = false
                 }

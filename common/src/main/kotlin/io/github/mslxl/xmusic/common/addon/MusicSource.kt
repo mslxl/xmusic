@@ -1,6 +1,5 @@
 package io.github.mslxl.xmusic.common.addon
 
-import io.github.mslxl.xmusic.common.XMusic
 import io.github.mslxl.xmusic.common.addon.processor.AlbumProcessor
 import io.github.mslxl.xmusic.common.addon.processor.CollectionProcessor
 import io.github.mslxl.xmusic.common.addon.processor.ExplorerProcessor
@@ -24,9 +23,6 @@ interface MusicSource : I18N {
     val name: I18NKey
     override val id: SourceID
         get() = name.hashCode().toString()
-
-    val userAgent: String
-        get() = "XMusic/${XMusic.version}"
 
     val information: SongProcessor
 

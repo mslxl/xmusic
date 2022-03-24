@@ -18,6 +18,7 @@ dependencies {
     api("org.jetbrains.kotlin:kotlin-reflect:1.6.10")
     api("com.google.code.gson:gson:2.9.0")
     api("org.apache.httpcomponents:httpclient:4.5.13")
+    api("org.mozilla:rhino:1.7.14")
 
     api("org.slf4j:slf4j-api:2.0.0-alpha5")
 

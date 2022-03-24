@@ -23,10 +23,15 @@ object AddonsMan {
 
     fun <T : MusicSource> register(addon: KClass<T>) {
         val instance = addon.createInstance()
-        addonsMutable[instance.id] = instance
+        register(instance)
+        @Suppress("UNCHECKED_CAST")
+        registeredAddons.add(addon as KClass<MusicSource>)
+    }
 
-        logger.info("register addon ${addon.qualifiedName}")
-        val members = addon.members
+    fun <T : MusicSource> register(addon: T) {
+        addonsMutable[addon.id] = addon
+        logger.info("register addon ${addon::class.qualifiedName}")
+        val members = addon::class.members
         // Find all function that have [XMusicEventRegister] modified
         // and add it to eventReceivers.
         for (elem in members) {
@@ -34,13 +39,10 @@ object AddonsMan {
                 val eventType = elem.parameters.lastOrNull()?.type?.classifier as? KClass<*>
                 if (eventType?.isSubclassOf(XMusicEvent::class) == true) {
                     logger.info("register ${elem.name} as event ${eventType.qualifiedName}")
-                    eventReceivers.getOrPut(eventType) { HashSet() }.add(instance.id to elem)
+                    eventReceivers.getOrPut(eventType) { HashSet() }.add(addon.id to elem)
                 }
             }
         }
-
-        @Suppress("UNCHECKED_CAST")
-        registeredAddons.add(addon as KClass<MusicSource>)
     }
 
     fun <T : XMusicEvent<*>> sentEvent(event: T, clazz: KClass<T>) {
